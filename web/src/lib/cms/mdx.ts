@@ -12,7 +12,7 @@ const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
 type Frontmatter = {
   title?: string;
-  date?: string;
+  date?: string | Date; // YAML parses an unquoted date into a Date, not a string
   author?: string;
   excerpt?: string;
   coverImage?: string;
@@ -24,6 +24,14 @@ type Frontmatter = {
 function toCategories(c: Frontmatter["categories"]): string[] {
   if (!c) return [];
   return Array.isArray(c) ? c : String(c).split(",").map((s) => s.trim()).filter(Boolean);
+}
+
+// gray-matter/YAML parses an unquoted `date: 2026-01-01` into a Date (not a string).
+// Normalize any date-ish value to an ISO string so `post.date` is always a string.
+function toIsoDate(d: string | Date | undefined): string | undefined {
+  if (d == null || d === "") return undefined;
+  const parsed = d instanceof Date ? d : new Date(String(d));
+  return Number.isNaN(parsed.getTime()) ? String(d) : parsed.toISOString();
 }
 
 function toSeo(fm: Frontmatter, s: PostSummary): Seo {
@@ -49,12 +57,12 @@ function parse(slug: string, raw: string): Post {
     slug,
     title: fm.title ?? slug,
     excerpt: fm.excerpt ?? content.replace(/[#>*_`~-]/g, "").replace(/\s+/g, " ").trim().slice(0, 200),
-    date: fm.date ?? new Date(0).toISOString(), // epoch default — deterministic (no per-render Date)
+    date: toIsoDate(fm.date) ?? new Date(0).toISOString(), // epoch default — deterministic
     author: fm.author,
     coverImage: fm.coverImage,
     categories: toCategories(fm.categories),
   };
-  return { ...summary, bodyFormat: "mdx", body: content, seo: toSeo(fm, summary), updatedAt: fm.date };
+  return { ...summary, bodyFormat: "mdx", body: content, seo: toSeo(fm, summary), updatedAt: toIsoDate(fm.date) };
 }
 
 async function files(): Promise<string[]> {
