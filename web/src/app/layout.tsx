@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { serverEnv } from "@/lib/env";
 import "./globals.css";
 
@@ -13,6 +14,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <header className="site-header">
+          <nav className="container">
+            <Link href="/" className="brand">said-next</Link>
+            <span className="links">
+              <Link href="/blog">Blog</Link>
+              <Link href="/contact">Contact</Link>
+            </span>
+          </nav>
+        </header>
         <main className="container">{children}</main>
       </body>
     </html>
