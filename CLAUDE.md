@@ -25,6 +25,8 @@ Start with **this file only**. Then load deeper context by task — see **Implem
 | Client & shared state (theme, session-for-UI, providers) | [`docs/adr/ADR-NEXT-S08-client-shared-state.md`](docs/adr/ADR-NEXT-S08-client-shared-state.md) |
 | Error / loading / not-found boundaries | [`docs/adr/ADR-NEXT-S09-error-handling.md`](docs/adr/ADR-NEXT-S09-error-handling.md) |
 | Coding conventions (how-to, code patterns) | [`docs/conventions.md`](docs/conventions.md) |
+| Content / CMS integration (the copy-paste lib) | [`src/lib/cms/`](src/lib/cms) — `CmsClient` contract + MDX / WordPress adapters (ADR-NEXT-S04) |
+| Screen UX shape / review gate | [`docs/ux/README.md`](docs/ux/README.md) + [`docs/qa/feature-ux-checklist.md`](docs/qa/feature-ux-checklist.md) |
 | Architecture overview | [`docs/vision.md`](docs/vision.md) |
 | Feature spec template | [`docs/features/template.md`](docs/features/template.md) |
 | Editing a specific feature | `docs/features/NEXT-XX-name.md` |
@@ -40,7 +42,7 @@ When this starter is stacked under a root orchestrator, the root owns progressiv
 - Code review / understanding → `docs/conventions.md`
 - Feature development → `docs/conventions.md` + `docs/features/NEXT-XX-name.md`
 - New feature → `docs/conventions.md` + `docs/features/template.md` (+ `ADR-NEXT-S03`)
-- Architecture → `docs/vision.md` + `docs/adr/`
+- Architecture → `docs/vision.md` + `docs/idea.md` + `docs/adr/`
 
 **3. Load implementation files (only when editing):**
 - Feature work → `src/features/<name>/`

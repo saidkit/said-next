@@ -1,0 +1,24 @@
+---
+title: Hello, said-next
+date: 2026-01-01
+author: said-next
+excerpt: This post is served through the CmsClient contract by the MDX adapter — the default content source that ships with the template.
+categories: [meta, starter]
+---
+
+## Welcome
+
+This post lives in `content/blog/` and is served by the **MDX adapter**
+(`src/lib/cms/mdx.ts`) through the `CmsClient` contract (ADR-NEXT-S04).
+
+Set `CMS_CLIENT=wordpress` and `WORDPRESS_API_URL=…` and the same routes render
+from WordPress instead — no route or component changes (ADR-NEXT-S05). The
+WordPress adapter (`src/lib/cms/wordpress.ts` + `rank-math.ts`) is copy-paste
+ready for derived projects.
+
+## What this seed demonstrates
+
+- **Content contract** — one `CmsClient` interface, swappable adapters (MDX, WordPress).
+- **SEO on the contract** — `post.seo` drives `generateMetadata`, JSON-LD, and `sitemap.ts` (ADR-NEXT-S07).
+- **Boundaries** — `error.tsx` / `not-found.tsx` / `loading.tsx` (ADR-NEXT-S09).
+- **Deployment** — standalone container, `/api/health`, boot-time env validation (ADR-NEXT-S06).

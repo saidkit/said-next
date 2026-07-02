@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# said-next — Standalone Next.js SAID Template
 
-## Getting Started
+A composable, AI-native **Next.js 16** starter: RSC-first, contract-driven content, ships as a
+standalone container. Self-contained — its own conventions, ADRs, scaffold, and AI development
+guide (`CLAUDE.md`). The Next analog of [`said-ts`](../said-ts) (backend core) and
+`said-web` (React SPA).
 
-First, run the development server:
+## Quickstart
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-fork> said-next
+cd said-next
+pnpm install
+pnpm dev            # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Boots in **MDX mode** by default — the seed post in `content/blog/` renders through the CMS
+contract, no backend required. Point it at WordPress with two env vars (below), same routes.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## What's included
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Docs spine (`docs/`)
+- **`CLAUDE.md`** — AI development guide (entry point; thin orchestrator, progressive loading)
+- **`conventions.md`** — code patterns, the RSC boundary, import rules
+- **`idea.md` / `vision.md`** — project context templates
+- **`adr/ADR-NEXT-S01..S09`** — System ADRs (repo structure, stack, features, service modules, DI, deployment, rendering/SEO, client state, error handling)
+- **`features/` · `ux/` · `qa/`** — feature-spec + task-log stencils, UX shape specs, quality-gate checklists
 
-## Learn More
+### Runnable scaffold (`src/`)
+- **`app/`** — routes: home, blog index + `[slug]`, `sitemap`/`robots`, `api/health`, `error`/`not-found`/`loading` boundaries
+- **`features/blog/`** — the reference feature: `server/` loaders (RSC + `cache()`), prop-driven components
+- **`lib/cms/`** — the **content contract** + adapters (see below)
+- **`lib/env.ts` + `instrumentation.ts`** — boot-time env validation (fail-fast, ADR-NEXT-S06)
 
-To learn more about Next.js, take a look at the following resources:
+### The CMS library (`src/lib/cms/`) — copy-paste into any derived project
+A single `CmsClient` contract with swappable adapters (ADR-NEXT-S04):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `cms-client.ts` — the contract + domain types (`Post`, `Seo`, …). No provider dependency.
+- `mdx.ts` — **MDX adapter** (default): reads `content/blog/*.mdx`.
+- `wordpress.ts` + `rank-math.ts` — **WordPress adapter**: `wp-json` REST, Zod-validated, SEO via Rank Math. Lift these two files to add a WordPress source.
+- `create-cms-client.ts` — env-selected factory. Consumers call this, never an adapter.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+SEO rides `post.seo` (ADR-NEXT-S07): `generateMetadata`, JSON-LD, and `sitemap.ts` read the
+contract — never a vendor API.
 
-## Deploy on Vercel
+## Switching to WordPress
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+CMS_CLIENT=wordpress WORDPRESS_API_URL=https://cms.example.com pnpm dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Same screens, real data. No source changes — the factory (ADR-NEXT-S05) selects the adapter at
+load; the whole app depends on the contract, not the vendor.
+
+## Commands
+
+Run through `make` (the command facade → `package.json` scripts; see `Makefile`):
+
+```bash
+make dev          # dev server
+make build        # production build (standalone) — R-GATE-BUILD
+make lint         # R-GATE-LINT
+make typecheck    # R-GATE-TYPECHECK
+make pre-commit   # all gates
+```
+
+## After cloning
+
+1. Update `package.json` name, `docs/idea.md`, and `docs/vision.md`.
+2. Replace the seed post in `content/blog/`; wire your real CMS via `CMS_CLIENT` / `WORDPRESS_API_URL`.
+3. Pick a styling layer (`src/app/globals.css` is intentionally minimal — ADR-NEXT-S02).
+4. Read `CLAUDE.md`, then `docs/adr/README.md` for the decision landscape.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

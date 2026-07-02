@@ -14,9 +14,9 @@ Feature specs and append-only task logs live here.
 
 ## Authoring
 
-- **New feature**: `/feature-architect <scope-path>` — Phase 2 (Architect) generates spec + initial tasks log from a scope.md
-- **New task on existing feature**: `/feature-add-task <feature-id> [bug] [app=<APP>] [priority=High|Medium|Low]`
-- **Implement**: `/feature-impl <task-id>` — drives Phase A (Classify + Inventory) → Phase B (Implement) → Phase C (Verify + close)
+- **New feature**: `/said:architect <scope-path>` — Phase 2 (Architect) generates spec + initial tasks log from a scope.md
+- **New task on existing feature**: `/said:add-task <feature-id> [bug] [app=<APP>] [priority=High|Medium|Low]`
+- **Implement**: `/said:impl <task-id>` — drives Phase A (Classify + Inventory) → Phase B (Implement) → Phase C (Verify + close)
 
 ## Related
 
@@ -25,6 +25,3 @@ Feature specs and append-only task logs live here.
 - `docs/screens/` — durable per-screen specs (cited from task body Refs / Reading list)
 - `docs/adr/README.md` — ADR registry (decisions + relationships)
 - `docs/ux/` — UX shape specs (lists / shell / form / errors)
-
-## Features
-- NEXT-01 — WordPress-headless blog

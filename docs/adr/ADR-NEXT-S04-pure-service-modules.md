@@ -22,7 +22,7 @@ src/lib/<service>/
 └── index.ts                # re-exports the contract + factory (the public surface)
 ```
 
-Concrete instance for this project — the CMS wrapper (see NEXT-01):
+Example — a CMS service module:
 
 ```
 src/lib/cms/

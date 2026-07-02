@@ -6,10 +6,10 @@ const eslintConfig = [
   ...nextTypescript,
   {
     rules: {
-      // Straight apostrophes are intentional in the ported marketing copy; the
+      // Straight apostrophes are intentional in prose copy; the
       // escaped-entity rule is pure noise (text renders identically).
       "react/no-unescaped-entities": "off",
-      // The Spectrum DS drives layout with plain <img> (cover/sticker art sized
+      // A vendored design system drives layout with plain <img> (cover/sticker art sized
       // by CSS); next/image isn't a fit for these decorative fills.
       "@next/next/no-img-element": "off",
     },

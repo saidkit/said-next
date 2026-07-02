@@ -78,7 +78,7 @@ Lower layers never import upward. **Features never import another feature's inte
 
 ## Out of scope (project concerns, not this system ADR)
 
-- The **multi-stage repo** (e.g. `design/`, `prototype/`, `web/`) - project-specific; owned by the consuming project.
+- The **multi-stage repo** (any outer layout the consuming project wraps this in) - project-specific; owned by the consuming project.
 - **Rendering/perf posture** (SSG-first, ISR-for-CMS) - see ADR-NEXT-S07.
 - **Feature internals** - see ADR-NEXT-S03 (feature structure). **Wiring / DI** — see ADR-NEXT-S05.
 - **External-service wrapper internals** — see ADR-NEXT-S04 (pure service modules).
@@ -103,7 +103,7 @@ Lower layers never import upward. **Features never import another feature's inte
 ## Related
 
 - **Source:** `said-ts` ADR-NEXT-S01 (monorepo structure), ADR-NEXT-S03 (feature structure).
-- **Instance example:** NEXT-03 (AiAgency site architecture) realizes this layout; NEXT-02 (Spectrum DS) is its styling layer.
+- **Instance:** the consuming project realizes this layout via its feature specs (`docs/features/`), which also choose the styling layer.
 - **Feature internals:** ADR-NEXT-S03 (feature structure) — the anatomy of `src/features/<name>/`.
 - **Service modules:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) (pure service modules) — the `src/lib/<service>/` seam.
 - **Dependency injection:** ADR-NEXT-S05 — how routes/features receive services (day-one).

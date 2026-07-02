@@ -27,7 +27,7 @@ contract, populated by adapters; progressive loading via file-based boundaries.*
 2. **ISR for external / CMS content.** Pages backed by a live source use `export const revalidate = N` + on-demand `revalidatePath` / `revalidateTag` — SSG-with-revalidation, not dynamic.
 3. **Dynamic only when genuinely per-request.** Reach for `export const dynamic = "force-dynamic"` (or `await cookies()` / `await headers()` — async in Next 16) only when the response truly varies per request (auth, personalization).
 4. **SEO rides the content contract.** The S04 `ContentItem` carries a `seo` field-set — `{ title, description, ogImage?, canonical?, jsonLd? }`. `generateMetadata`, the JSON-LD `<script>`, `sitemap.ts`, and `robots.ts` read **the contract**, never a CMS/vendor API.
-5. **Adapters populate `seo`, the template hides the vendor.** The MDX adapter fills `seo` from frontmatter (ships in the template); a CMS adapter (e.g. WordPress via Rank Math `getHead`) fills the **same** fields behind its S04 service module. Swapping the source touches the adapter, not the metadata code.
+5. **Adapters populate `seo`, the template hides the vendor.** The MDX adapter fills `seo` from frontmatter (ships in the template); a CMS adapter fills the **same** fields behind its S04 service module. Swapping the source touches the adapter, not the metadata code.
 6. **`sitemap.ts` / `robots.ts` are generated** from the content contract + route map, not hand-maintained. Set `metadataBase` once in the root layout; map `canonical → alternates.canonical`, `og → openGraph`.
 7. **Progressive loading is file-based.** `loading.tsx` per segment (instant Suspense fallback); scoped `<Suspense>` around slow subtrees so the shell streams first; `next/dynamic` for heavy client islands below the fold. Boundaries pair with the error model (ADR-NEXT-S09).
 
@@ -60,7 +60,7 @@ function toSeo(frontmatter: Frontmatter, slug: string): ContentItem["seo"] {
     jsonLd: articleJsonLd(frontmatter, slug),   // BlogPosting schema
   }
 }
-// A CMS adapter (e.g. WordPress) maps Rank Math `getHead` → the same shape. Vendor stays in the adapter.
+// A CMS adapter maps its provider head tags to the same shape. Vendor stays in the adapter.
 ```
 
 ```ts
@@ -103,5 +103,5 @@ author's responsibility per content type.
 - **Content contract:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) — `post.seo` is a field-set on the `ContentItem` these service modules return; adapters populate it.
 - **Layout:** [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md) — routes/layout this posture renders.
 - **Boundaries:** [ADR-NEXT-S09](ADR-NEXT-S09-error-handling.md) — `loading.tsx` / `<Suspense>` pair with the error containment layers.
-- **Instance:** NEXT-03 (AiAgency site architecture) — the concrete route map + per-route rendering choices; NEXT-01 (WordPress blog) — the CMS adapter that fills `post.seo` via Rank Math `getHead`.
+- **Instance:** the consuming project picks the concrete route map, per-route rendering choices, and the CMS adapter that fills `post.seo`.
 - **Conventions:** `../conventions.md` (*Rendering posture*, *Data fetching & caching*).

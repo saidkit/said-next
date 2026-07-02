@@ -105,7 +105,7 @@ export const useTheme = () => useContext(ThemeContext)!
 - **Chosen** - **Tiered residue: local → URL → Context → store, server-seeded; theme via pre-hydration script + mount-gated provider**
   - minimal client JS; escalates only on real need; theme correct before first paint with SSG preserved and no hydration mismatch; session server-seeded only in its dynamic segment; clean line between residue and server data
 - Rejected - **Server-seed theme via `await cookies()` in the root layout**
-  - the root renders in every route, so this opts the whole site (static marketing NEXT-03, ISR blog NEXT-01) into dynamic rendering (ADR-NEXT-S07 Rule 1); theme is not per-request, and a pre-hydration script gets the same no-flash result statically
+  - the root renders in every route, so this opts the whole site (static marketing routes, ISR blog routes) into dynamic rendering (ADR-NEXT-S07 Rule 1); theme is not per-request, and a pre-hydration script gets the same no-flash result statically
 - Rejected - **A global client store (Zustand/Redux) by default**
   - RSC + `searchParams` + Server Actions cover the common cases; a global store is unjustified SSR weight and invites mirroring server data; enters only when Rule 2's tier-5 trigger fires
 - Rejected - **A client query cache (TanStack Query) by default**
