@@ -3,7 +3,8 @@
 ## Project Overview
 **Project**: said-nextjs — Next.js SSR + headless-CMS starter template
 **Stack**: Next.js 16 App Router + React 19.2, TypeScript strict, single styling layer (project's choice), file-based MDX content, headless CMS
-**Architecture**: thin App-Router routes (`src/app/`) compose features (`src/features/<name>/`) + shared components; RSC by default
+**Architecture**: thin App-Router routes (`web/src/app/`) compose features (`web/src/features/<name>/`) + shared components; RSC by default
+**Repository**: clean root (this guide + `LICENSE` + the `docs/` spine); the Next app in **`web/`**, and a local WordPress backend in **`server/`** (docker-compose) for the CMS integration
 **Composability**: stacks into any backend as the `web/` directory, or stands alone
 
 ## Quick Start
@@ -25,7 +26,7 @@ Start with **this file only**. Then load deeper context by task — see **Implem
 | Client & shared state (theme, session-for-UI, providers) | [`docs/adr/ADR-NEXT-S08-client-shared-state.md`](docs/adr/ADR-NEXT-S08-client-shared-state.md) |
 | Error / loading / not-found boundaries | [`docs/adr/ADR-NEXT-S09-error-handling.md`](docs/adr/ADR-NEXT-S09-error-handling.md) |
 | Coding conventions (how-to, code patterns) | [`docs/conventions.md`](docs/conventions.md) |
-| Content / CMS integration (the copy-paste lib) | [`src/lib/cms/`](src/lib/cms) — `CmsClient` contract + MDX / WordPress adapters (ADR-NEXT-S04) |
+| Content / CMS integration (the copy-paste lib) | [`web/src/lib/cms/`](web/src/lib/cms) — `CmsClient` contract + MDX / WordPress adapters (ADR-NEXT-S04) |
 | Screen UX shape / review gate | [`docs/ux/README.md`](docs/ux/README.md) + [`docs/qa/feature-ux-checklist.md`](docs/qa/feature-ux-checklist.md) |
 | Architecture overview | [`docs/vision.md`](docs/vision.md) |
 | Feature spec template | [`docs/features/template.md`](docs/features/template.md) |
@@ -45,29 +46,29 @@ When this starter is stacked under a root orchestrator, the root owns progressiv
 - Architecture → `docs/vision.md` + `docs/idea.md` + `docs/adr/`
 
 **3. Load implementation files (only when editing):**
-- Feature work → `src/features/<name>/`
-- Routes / layout → `src/app/<route>/page.tsx` + `src/app/layout.tsx`
-- Shared utils + service modules → `src/lib/`
+- Feature work → `web/src/features/<name>/`
+- Routes / layout → `web/src/app/<route>/page.tsx` + `web/src/app/layout.tsx`
+- Shared utils + service modules → `web/src/lib/`
 
 ## Navigation Map
 
 | Type | Location | Load When |
 |------|----------|-----------|
 | Feature specs | `docs/features/NEXT-XX-name.md` | working on that feature |
-| Routes (thin entry points) | `src/app/<route>/page.tsx` | adding / changing a route |
-| Root layout / providers | `src/app/layout.tsx` | fonts, metadata, global providers |
-| Feature modules | `src/features/<name>/` | building a feature |
-| Feature components | `src/features/<name>/components/` | editing feature UI |
-| Client hooks (`"use client"`) | `src/features/<name>/hooks/` | client state / interactivity |
-| Shared cross-feature UI | `src/components/` | extracting shared UI |
-| Shared utils + service modules | `src/lib/` (`@/lib/*`) | utils / external-system seam |
-| Styling layer | `src/app/globals.css` + styling tokens / config | touching styling |
-| File-based content | `content/` | adding / editing MDX |
+| Routes (thin entry points) | `web/src/app/<route>/page.tsx` | adding / changing a route |
+| Root layout / providers | `web/src/app/layout.tsx` | fonts, metadata, global providers |
+| Feature modules | `web/src/features/<name>/` | building a feature |
+| Feature components | `web/src/features/<name>/components/` | editing feature UI |
+| Client hooks (`"use client"`) | `web/src/features/<name>/hooks/` | client state / interactivity |
+| Shared cross-feature UI | `web/src/components/` | extracting shared UI |
+| Shared utils + service modules | `web/src/lib/` (`@/lib/*`) | utils / external-system seam |
+| Styling layer | `web/src/app/globals.css` + styling tokens / config | touching styling |
+| File-based content | `web/content/` | adding / editing MDX |
 | ADRs | `docs/adr/ADR-NEXT-*.md` | an architectural decision |
 
 ## Development Commands
 
-Run via `make` (the `Makefile` maps each verb to a `package.json` script):
+Run from the app dir (`cd web`) via `make` (each verb maps to a `package.json` script):
 
 ```bash
 make dev          # Next.js dev server
@@ -134,12 +135,12 @@ The **Workflow Process** above is the lightweight per-change loop; the `said:` p
 - **SEO rides the content contract** — `post.seo` on the S04 contract; `generateMetadata` / `sitemap` read it, adapters fill it; no vendor SEO calls in routes → ADR-NEXT-S07
 - **Ship a CI-built standalone container** — `output: "standalone"`; the gated `make build` inside the image is the shipped artifact; runtime env validated at boot; freshness = ISR, not redeploy → ADR-NEXT-S06
 - **Client state is a server-seeded residue** — escalate local → URL → Context → store; no global store, no client data cache; providers are `"use client"` islands seeded from the server (theme via pre-hydration script stays SSG) → ADR-NEXT-S08
-- **Service-module seam** — external systems (CMS, APIs) sit behind pure modules in `src/lib/<service>/`; no raw fetch/SDK calls scattered across routes/UI → ADR-NEXT-S04
-- **Content is file-based** — read `content/` via a `src/lib/` loader, not inline in routes → ADR-NEXT-S01
+- **Service-module seam** — external systems (CMS, APIs) sit behind pure modules in `web/src/lib/<service>/`; no raw fetch/SDK calls scattered across routes/UI → ADR-NEXT-S04
+- **Content is file-based** — read `web/content/` via a `web/src/lib/` loader, not inline in routes → ADR-NEXT-S01
 - **One styling layer** — a single explicit styling layer (the project's choice); no second framework competing with it → ADR-NEXT-S01
 - **Cross-feature wiring** — features never import another feature's internals; inject via a `Deps` interface at the route/server composition point → ADR-NEXT-S05
 - **Errors: missing vs broken** — `notFound()` → `not-found.tsx` for expected; `throw` → `error.tsx` for unexpected; expected Server Action failures are returned, not thrown → ADR-NEXT-S09
-- **Imports** — `@/` for `src/*`; relative only within a feature/route folder; `src/lib/` never imports from `src/app/` → ADR-NEXT-S01
+- **Imports** — `@/` for `web/src/*`; relative only within a feature/route folder; `web/src/lib/` never imports from `web/src/app/` → ADR-NEXT-S01
 
 ## Task Log Rules (NEXT-XX.tasks.md)
 Append-only historical records. Authoring discipline + close-of-task review live in [`docs/features/template-tasks.md`](docs/features/template-tasks.md) — canonical source. Read it before writing or closing any task entry.
