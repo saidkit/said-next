@@ -33,7 +33,7 @@
 src/features/     # Feature changes
 src/components/   # Shared component changes
 src/lib/          # Infrastructure changes
-docs/features/    # Update affected NEXT-XX files
+docs/features/    # Update affected FEAT-XX files
 ```
 
 ### Action Items
@@ -58,6 +58,17 @@ docs/features/    # Update affected NEXT-XX files
 
 ## Related
 
-**Features:** [NEXT-XX files affected by this decision]
+**Features:** [FEAT-XX files affected by this decision]
 **ADRs:** [Related architectural decisions]
 **References:** [External links, RFCs, etc.]
+
+---
+
+## Template Notes
+
+**For Claude Code:**
+- Link this ADR from affected FEAT-XXX-name.md files
+- Include code examples in Implementation section
+- Keep Problem/Decision sections concise
+- Use tables for option comparison
+- Focus on actionable consequences

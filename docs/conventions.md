@@ -1,46 +1,46 @@
-# NextJs Frontend Code Conventions — said-nextjs
+# NextJs Frontend Code Conventions - said-nextjs
 
-How to write code in this starter. **Patterns + copyable examples** — verify against the actual files before acting; this doc describes intent, not current state.
+How to write code in this starter. **Patterns + copyable examples** - verify against the actual files before acting; this doc describes intent, not current state.
 
 ## Core Philosophy
 
-- **KISS** — simple solutions over complex ones.
-- **YAGNI** — build only what's needed now.
-- **MVP First** — working version, then iterate.
-- **Type Safety** — Zod for runtime, TypeScript for compile-time.
-- **RSC by default** — fetch on the server; `"use client"` only at the edges.
+- **KISS** - simple solutions over complex ones.
+- **YAGNI** - build only what's needed now.
+- **MVP First** - working version, then iterate.
+- **Type Safety** - Zod for runtime, TypeScript for compile-time.
+- **RSC by default** - fetch on the server; `"use client"` only at the edges.
 
 ## Stack
 
-| Concern | Choice |
-|---------|--------|
-| Framework | Next.js 16 (App Router) + React 19.2 — server-first, Turbopack, `output: "standalone"` |
-| Language | TypeScript (strict) |
-| Styling | a single explicit styling layer — project's choice (Tailwind, a vendored DS, CSS Modules…); never two |
-| Content | file-based **MDX** under `content/`, read by a `src/lib/` loader |
-| Validation | Zod (runtime + compile-time) |
-| Lint | ESLint (flat config) |
-| Commands | `make` facade → `package.json` scripts (see **Quality gates**) |
+| Concern    | Choice                                                                                                  |
+|------------|---------------------------------------------------------------------------------------------------------|
+| Framework  | Next.js 16 (App Router) + React 19.2 - server-first, Turbopack, `output: "standalone"`                  |
+| Language   | TypeScript (strict)                                                                                     |
+| Styling    | a single explicit styling layer - project's choice (Tailwind, a vendored DS, CSS Modules…); never two   |
+| Content    | file-based **MDX** under `content/`, read by a `src/lib/` loader                                        |
+| Validation | Zod (runtime + compile-time)                                                                            |
+| Lint       | ESLint (flat config)                                                                                    |
+| Commands   | `make` facade → `package.json` scripts (see **Quality gates**)                                          |
 
 ---
 
 ## Feature Structure
 
-Routes under `src/app/` are **thin** — `page.tsx` resolves deps and **calls a feature** or compose from feature components.
+Routes under `src/app/` are **thin** - `page.tsx` resolves deps and **calls a feature** or compose from feature components.
 Every feature lives in `src/features/<name>/` (feature structure: **ADR-NEXT-S03**):
 
 ```
 src/features/<name>/
-├── components/   # Feature-scoped UI (PascalCase.tsx) — RSC unless interactive
-├── hooks/        # Client hooks (use<Name>.ts) — "use client", state/effects
+├── components/   # Feature-scoped UI (PascalCase.tsx) - RSC unless interactive
+├── hooks/        # Client hooks (use<Name>.ts) - "use client", state/effects
 ├── server/       # Server-only logic: data resolution, service calls (RSC)
 ├── types/        # Feature-owned types (<name>.types.ts)
 └── index.ts      # Public API re-exports (optional)
 ```
 
-Only `components/` is expected in every feature; the rest are added when needed. There is **no SPA `screens/` or `store/`** — route targets are `src/app/<route>/page.tsx`; client state is local or URL-driven (see the decision tree).
+Only `components/` is expected in every feature; the rest are added when needed. There is **no SPA `screens/` or `store/`** - route targets are `src/app/<route>/page.tsx`; client state is local or URL-driven (see the decision tree).
 
-- Routes call features; **features never import another feature's internals** — share via `src/components/`, `src/lib/`, or dependency injection (**ADR-NEXT-S05**).
+- Routes call features; **features never import another feature's internals** - share via `src/components/`, `src/lib/`, or dependency injection (**ADR-NEXT-S05**).
 - Shared cross-feature UI in `src/components/`; shared utilities + **service modules** (external systems behind a contract, ADR-NEXT-S04) in `src/lib/` (imported as `@/lib/*`).
 
 Canonical structure: [`adr/ADR-NEXT-S01-repository-structure.md`](adr/ADR-NEXT-S01-repository-structure.md).
@@ -57,13 +57,13 @@ A new file is justified when **all** hold: (1) it's an **independent source of t
 - NOT: A `getPostStatusLabel` helper keyed by `PostStatus` → next to `POST_STATUSES` in `types.ts`, not `utils.ts`.
 - YES: A second independent loader that will gain siblings → its own file.
 
-Failing test: a single function/object whose existence is governed by another file's contract is a **derivative** — co-locate it.
+Failing test: a single function/object whose existence is governed by another file's contract is a **derivative** - co-locate it.
 
 ### Service modules (external systems behind a contract)
 
 See **ADR-NEXT-S04**. Short version:
 
-> Any external system (CMS, scheduler, analytics, search) is wrapped behind a **typed contract** in `src/lib/<service>/` and consumed through that interface — features depend on the contract, not the vendor SDK. Swapping the backing implementation is a localized change.
+> Any external system (CMS, scheduler, analytics, search) is wrapped behind a **typed contract** in `src/lib/<service>/` and consumed through that interface - features depend on the contract, not the vendor SDK. Swapping the backing implementation is a localized change.
 
 - NOT: `getAllPosts(): Promise<Post[]>` contract; MDX adapter today, CMS adapter tomorrow, callers unchanged.
 - YES: `import { createClient } from "@some/cms-sdk"` inside a route or component.
@@ -88,10 +88,10 @@ See **ADR-NEXT-S04**. Short version:
 
 ## Server / Client boundary
 
-**Default to Server Components; fetch on the server.** Server components fetch data directly — no client API layer — and pass it down as props.
+**Default to Server Components; fetch on the server.** Server components fetch data directly - no client API layer - and pass it down as props.
 
 ```tsx
-// app/blog/page.tsx — async RSC: fetch on the server, pass props down
+// app/blog/page.tsx - async RSC: fetch on the server, pass props down
 import { loadPosts } from "@/features/blog/server/load-posts"
 import { PostList } from "@/features/blog/components/PostList"
 
@@ -101,10 +101,10 @@ export default async function BlogPage() {
 }
 ```
 
-`"use client"` only where it **earns it** — event handlers, stateful hooks, browser APIs, or client-only libraries:
+`"use client"` only where it **earns it** - event handlers, stateful hooks, browser APIs, or client-only libraries:
 
 ```tsx
-// features/blog/components/ArticleShell.tsx — a client island
+// features/blog/components/ArticleShell.tsx - a client island
 "use client"
 import { useState } from "react"
 
@@ -115,8 +115,8 @@ export function ArticleShell({ children }: { children: React.ReactNode }) {
 }
 ```
 
-- **Data is resolved on the server.** Client components **receive props** — they don't fetch.
-- **Browser APIs** (`window`, `document`, `new Date()` for live values) belong in **effects inside client components** — never in render / RSC (hydration mismatch).
+- **Data is resolved on the server.** Client components **receive props** - they don't fetch.
+- **Browser APIs** (`window`, `document`, `new Date()` for live values) belong in **effects inside client components** - never in render / RSC (hydration mismatch).
 - Keep `"use client"` at the **leaf**: a client island deep in the tree keeps its server-rendered ancestors server-only.
 
 ---
@@ -134,7 +134,7 @@ export const loadPosts = cache(async () => getAllPosts())
 // Called from multiple server components in one request → runs once.
 ```
 
-`fetch` is **uncached by default** (as are GET Route Handlers) — opt into caching explicitly:
+`fetch` is **uncached by default** (as are GET Route Handlers) - opt into caching explicitly:
 
 ```ts
 await fetch(url, { next: { revalidate: 3600 } })     // ISR: re-fetch hourly
@@ -142,15 +142,15 @@ await fetch(url, { cache: "force-cache" })           // opt back into caching (u
 await fetch(url, { cache: "no-store" })              // always dynamic (uncached = the default)
 ```
 
-- **Never fetch in a client component** to render initial data — fetch on the server, pass props.
-- **React `cache()` dedupes within a single request only** — ephemeral, no tags, no cross-request persistence; use it to avoid double-fetching in one render (as `loadPosts` above).
-- **To persist a non-`fetch` source (SDK call, file read) across requests with tag-based revalidation, use `unstable_cache`** (`next/cache`). The [`use cache`](https://nextjs.org/docs/app/api-reference/directives/use-cache) directive is the more declarative alternative — opt into it (and PPR) by enabling `cacheComponents` in `next.config` when a project wants component/function-level caching.
+- **Never fetch in a client component** to render initial data - fetch on the server, pass props.
+- **React `cache()` dedupes within a single request only** - ephemeral, no tags, no cross-request persistence; use it to avoid double-fetching in one render (as `loadPosts` above).
+- **To persist a non-`fetch` source (SDK call, file read) across requests with tag-based revalidation, use `unstable_cache`** (`next/cache`). The [`use cache`](https://nextjs.org/docs/app/api-reference/directives/use-cache) directive is the more declarative alternative - opt into it (and PPR) by enabling `cacheComponents` in `next.config` when a project wants component/function-level caching.
 
 ---
 
 ## Mutations (when needed)
 
-A content/marketing site is mostly read-only; for the occasional form, use **Server Actions + Zod** — no client API layer:
+A content/marketing site is mostly read-only; for the occasional form, use **Server Actions + Zod** - no client API layer:
 
 ```ts
 // features/contact/server/submit.ts
@@ -169,7 +169,7 @@ export async function submitContact(prevState: unknown, formData: FormData) {
 
 Validate at the boundary with Zod; revalidate affected routes with `revalidatePath(...)` (or `revalidateTag(...)`).
 
-On the client, wire it with React 19's **`useActionState`** (pending state + last result), **`useFormStatus`** (submit-button pending), and **`useOptimistic`** for optimistic UI — still no client API layer.
+On the client, wire it with React 19's **`useActionState`** (pending state + last result), **`useFormStatus`** (submit-button pending), and **`useOptimistic`** for optimistic UI - still no client API layer.
 
 ---
 
@@ -181,9 +181,9 @@ Default to **static**; opt into freshness deliberately. Decision:
 |---|---|---|
 | Owned, build-time (marketing pages) | **SSG** | default; `export const dynamic = "force-static"` to assert it |
 | External / CMS-backed | **ISR** | `export const revalidate = N` + on-demand `revalidatePath` |
-| Genuinely per-request | **SSR / dynamic** | `export const dynamic = "force-dynamic"`, or `await cookies()` / `await headers()` (async — await them) |
+| Genuinely per-request | **SSR / dynamic** | `export const dynamic = "force-dynamic"`, or `await cookies()` / `await headers()` (async - await them) |
 
-**Full rendering + SEO contract:** [ADR-NEXT-S07](adr/ADR-NEXT-S07-rendering-performance-seo.md) — static-first posture, the `post.seo` seam on the S04 content contract, source adapters, progressive loading.
+**Full rendering + SEO contract:** [ADR-NEXT-S07](adr/ADR-NEXT-S07-rendering-performance-seo.md) - static-first posture, the `post.seo` seam on the S04 content contract, source adapters, progressive loading.
 
 Dynamic route segments enumerate their params at build:
 
@@ -202,7 +202,7 @@ export const revalidate = 3600   // ISR for new/edited posts
 
 - **Routes are file-based folders** under `src/app/`; add a route = add a folder + `page.tsx`.
 - **Metadata** via `generateMetadata` (dynamic) or a static `metadata` export; set `metadataBase` in the root layout.
-- **Boundaries are files**, not wrappers: `loading.tsx` (Suspense fallback), `error.tsx` (`"use client"` error boundary), `not-found.tsx` (404). One per route segment as needed. Full error contract — containment layers, expected-vs-uncaught, islands: [ADR-NEXT-S09](adr/ADR-NEXT-S09-error-handling.md).
+- **Boundaries are files**, not wrappers: `loading.tsx` (Suspense fallback), `error.tsx` (`"use client"` error boundary), `not-found.tsx` (404). One per route segment as needed. Full error contract - containment layers, expected-vs-uncaught, islands: [ADR-NEXT-S09](adr/ADR-NEXT-S09-error-handling.md).
 
 ```tsx
 // app/blog/[slug]/page.tsx
@@ -224,10 +224,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
 ## File-based content (MDX)
 
-Content lives under `content/`, read by a `src/lib/` loader — never inlined in routes:
+Content lives under `content/`, read by a `src/lib/` loader - never inlined in routes:
 
 ```ts
-// lib/content/mdx.ts — the loader behind the content contract
+// lib/content/mdx.ts - the loader behind the content contract
 import { readFile, readdir } from "node:fs/promises"
 import matter from "gray-matter"
 
@@ -249,13 +249,13 @@ Keep the loader behind the **service-module contract** (ADR-NEXT-S04) so a CMS a
 
 1. **Server data** → fetch in a Server Component / `server/` module; dedup with `cache()`.
 2. **Mutations** → Server Actions (or route handlers) + Zod.
-3. **URL-driven state** (filters, tabs, pagination) → `searchParams` — async (`await` in Server Components; unwrap with `use()` in Client Components).
+3. **URL-driven state** (filters, tabs, pagination) → `searchParams` - async (`await` in Server Components; unwrap with `use()` in Client Components).
 4. **Local interactivity** (single client component) → `"use client"` + `useState` / `useReducer`.
 5. **Cross-component client state** → lift to a client provider **only when shared**; no global store by default.
 
-**Rule:** never reach for a global client store (Zustand/Redux) for data the server already has — server data flows down as props from RSC.
+**Rule:** never reach for a global client store (Zustand/Redux) for data the server already has - server data flows down as props from RSC.
 
-**Full client-state contract** — provider tiers, server-seeding, theme without hydration mismatch, provider-vs-error-boundary placement: [ADR-NEXT-S08](adr/ADR-NEXT-S08-client-shared-state.md).
+**Full client-state contract** - provider tiers, server-seeding, theme without hydration mismatch, provider-vs-error-boundary placement: [ADR-NEXT-S08](adr/ADR-NEXT-S08-client-shared-state.md).
 
 ---
 
@@ -265,7 +265,7 @@ Client hooks are `"use client"` and live in `features/<name>/hooks/`.
 
 ### DOM-measurement effects use callback refs
 
-Attaching a `ResizeObserver` / `IntersectionObserver` (or any DOM-attach-time wiring) to an element that may render **conditionally** — behind `loading.tsx`, a Suspense boundary, an `if`/`else` — needs a `useCallback` ref, not `useRef + useEffect`:
+Attaching a `ResizeObserver` / `IntersectionObserver` (or any DOM-attach-time wiring) to an element that may render **conditionally** - behind `loading.tsx`, a Suspense boundary, an `if`/`else` - needs a `useCallback` ref, not `useRef + useEffect`:
 
 ```ts
 // ✗ Wrong: empty deps + early return → observer silently never attaches
@@ -288,16 +288,16 @@ const ref = useCallback((el: HTMLDivElement | null) => {
 }, [])
 ```
 
-**Why it's a footgun:** the `useEffect + empty deps` form fails only when the measured element renders *later* than first commit (after a Suspense/Skeleton). The symptom is invisible at the developer's viewport whenever the fallback value happens to match the real one — so it ships unnoticed. Use the callback ref for any conditionally-rendered measured node.
+**Why it's a footgun:** the `useEffect + empty deps` form fails only when the measured element renders *later* than first commit (after a Suspense/Skeleton). The symptom is invisible at the developer's viewport whenever the fallback value happens to match the real one - so it ships unnoticed. Use the callback ref for any conditionally-rendered measured node.
 
-**React 19** lets a ref callback **return a cleanup function** — disconnect the observer there instead of tracking it in a module-scoped ref (the same ref-as-prop model that makes `forwardRef` unnecessary):
+**React 19** lets a ref callback **return a cleanup function** - disconnect the observer there instead of tracking it in a module-scoped ref (the same ref-as-prop model that makes `forwardRef` unnecessary):
 
 ```ts
 const ref = useCallback((el: HTMLDivElement | null) => {
   if (!el) return
   const obs = new ResizeObserver(/* … */)
   obs.observe(el)
-  return () => obs.disconnect()      // React 19: ref-callback cleanup — runs on detach/unmount
+  return () => obs.disconnect()      // React 19: ref-callback cleanup - runs on detach/unmount
 }, [])
 ```
 
@@ -310,7 +310,7 @@ const ref = useCallback((el: HTMLDivElement | null) => {
 import { cache } from "react"
 // 2. External packages
 import { z } from "zod"
-// 3. Project aliases (@/ — alphabetical by path)
+// 3. Project aliases (@/ - alphabetical by path)
 import { getAllPosts } from "@/lib/content"
 import type { Post } from "@/features/blog/types/post.types"
 // 4. Feature-local (relative within own feature)
@@ -324,7 +324,7 @@ import { PostCard } from "./PostCard"
 
 ## Named constants over literals
 
-Numeric or string knobs that recur across the codebase live as named exports, not inline literals — recurring literals are under-noticed sites of drift (three call sites type the same value, one gets edited, the rest silently diverge).
+Numeric or string knobs that recur across the codebase live as named exports, not inline literals - recurring literals are under-noticed sites of drift (three call sites type the same value, one gets edited, the rest silently diverge).
 
 **Rule:** if a literal appears at more than one call site **and** means *the same idea* at each, give it a named export. Litmus: *if the value changed, would I update more than one file?* Yes → extract; no → leave inline.
 
@@ -332,28 +332,28 @@ Numeric or string knobs that recur across the codebase live as named exports, no
 - YES: Status enum tuples (`POST_STATUSES`) in `types.ts`, consumed by schema + UI.
 - NOT: `setTimeout(fn, 200)` once in a single component → keep inline; not recurring.
 
-Applies equally to magic strings — error keys, env-var names, route prefixes.
+Applies equally to magic strings - error keys, env-var names, route prefixes.
 
 ---
 
 ## Forbidden practices
 
-- **No competing styling systems** — pick one styling layer and keep it singular; never add a second CSS framework alongside it.
-- **No data fetching in client components** — fetch on the server, pass props.
-- **No business logic in components** — extract to hooks or feature `server/` logic.
-- **No direct external-API calls in components** — go through a service module / contract (ADR-NEXT-S04).
-- **No `new Date()` / `Math.random()` in render** — effects only (hydration mismatch).
-- **No nested ternaries in JSX** — extract to variables or early returns.
-- **No `any`** — use `unknown` and narrow.
-- **No `../../` across features** — use `@/`.
-- **No root-level dump-all `types.ts`** — types belong in the owning feature.
+- **No competing styling systems** - pick one styling layer and keep it singular; never add a second CSS framework alongside it.
+- **No data fetching in client components** - fetch on the server, pass props.
+- **No business logic in components** - extract to hooks or feature `server/` logic.
+- **No direct external-API calls in components** - go through a service module / contract (ADR-NEXT-S04).
+- **No `new Date()` / `Math.random()` in render** - effects only (hydration mismatch).
+- **No nested ternaries in JSX** - extract to variables or early returns.
+- **No `any`** - use `unknown` and narrow.
+- **No `../../` across features** - use `@/`.
+- **No root-level dump-all `types.ts`** - types belong in the owning feature.
 - **No commits without explicit user request.**
 
 ---
 
 ## Testing
 
-Vitest for unit tests, co-located with source (`<name>.test.ts`) — add the first tests alongside the first non-trivial pure function or service contract (e.g. the MDX loader's frontmatter parsing, a CMS contract adapter). Prefer testing **pure functions and service contracts** over rendering.
+Vitest for unit tests, co-located with source (`<name>.test.ts`) - add the first tests alongside the first non-trivial pure function or service contract (e.g. the MDX loader's frontmatter parsing, a CMS contract adapter). Prefer testing **pure functions and service contracts** over rendering.
 
 ```ts
 // lib/content/mdx.test.ts
@@ -384,12 +384,12 @@ make pre-commit    # R-GATE-LINT → R-GATE-TYPECHECK → R-GATE-BUILD, fails cl
 
 ## References
 
-- [`adr/ADR-NEXT-S01-repository-structure.md`](adr/ADR-NEXT-S01-repository-structure.md) — repo layout / where code goes / RSC boundary
-- [`adr/ADR-NEXT-S02-frontend-stack.md`](adr/ADR-NEXT-S02-frontend-stack.md) — framework, validation, styling policy, data/state tree
-- [`adr/ADR-NEXT-S03-feature-structure.md`](adr/ADR-NEXT-S03-feature-structure.md) — feature anatomy along the RSC / client boundary
-- [`adr/ADR-NEXT-S04-pure-service-modules.md`](adr/ADR-NEXT-S04-pure-service-modules.md) — external systems behind a contract
-- [`adr/ADR-NEXT-S05-dependency-injection.md`](adr/ADR-NEXT-S05-dependency-injection.md) — cross-feature wiring via a `Deps` interface
-- [`adr/ADR-NEXT-S06-deployment.md`](adr/ADR-NEXT-S06-deployment.md) — build / container / CI gates / env seam / ISR runtime
-- [`adr/ADR-NEXT-S07-rendering-performance-seo.md`](adr/ADR-NEXT-S07-rendering-performance-seo.md) — rendering posture (SSG/ISR/dynamic) + contract-driven SEO seam
-- [`adr/ADR-NEXT-S08-client-shared-state.md`](adr/ADR-NEXT-S08-client-shared-state.md) — client-state tiers, server-seeded providers, theme without hydration mismatch
-- [`vision.md`](vision.md) — architecture overview
+- `adr/ADR-NEXT-S01-repository-structure.md` - repo layout / where code goes / RSC boundary
+- `adr/ADR-NEXT-S02-frontend-stack.md` - framework, validation, styling policy, data/state tree
+- `adr/ADR-NEXT-S03-feature-structure.md` - feature anatomy along the RSC / client boundary
+- `adr/ADR-NEXT-S04-pure-service-modules.md` - external systems behind a contract
+- `adr/ADR-NEXT-S05-dependency-injection.md` - cross-feature wiring via a `Deps` interface
+- `adr/ADR-NEXT-S06-deployment.md` - build / container / CI gates / env seam / ISR runtime
+- `adr/ADR-NEXT-S07-rendering-performance-seo.md` - rendering posture (SSG/ISR/dynamic) + contract-driven SEO seam
+- `adr/ADR-NEXT-S08-client-shared-state.md` - client-state tiers, server-seeded providers, theme without hydration mismatch
+- `vision.md` - architecture overview

@@ -1,4 +1,4 @@
-# Web Architecture
+# Technical Architecture
 
 ## System Design
 

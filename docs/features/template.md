@@ -1,10 +1,10 @@
 # <FEAT>-<NN>: [Feature Name]
 
 ## Context to load alongside this spec
-- `docs/ux/<spec>.md` — <why it applies>
-- `docs/adr/<ADR-NEXT-XXX>.md` — <why it applies>
-- `src/features/<related>/` — <related code>
-- `docs/features/<FEAT>-<NN>.tasks.md` — implementation log
+- `docs/ux/<spec>.md` - <why it applies>
+- `docs/adr/<ADR-NEXT-XXX>.md` - <why it applies>
+- `src/features/<related>/` - <related code>
+- `docs/features/<FEAT>-<NN>.tasks.md` - implementation log
 
 (Load these before authoring or modifying code in this feature.)
 
@@ -20,13 +20,13 @@
 - [ ] [Core functionality requirement 3]
 
 ### UI/UX Requirements
-- [ ] Screen: [ScreenName] — [what it displays, how user reaches it]
-- [ ] Components: [ComponentName] — [what it renders, key interactions]
+- [ ] Screen: [ScreenName] - [what it displays, how user reaches it]
+- [ ] Components: [ComponentName] - [what it renders, key interactions]
 - [ ] State: [server via TanStack Query / client via Zustand / form via RHF]
 - [ ] [User interaction flow]
 
 ### API Integration
-- [ ] Endpoints consumed: [METHOD /path — purpose]
+- [ ] Endpoints consumed: [METHOD /path - purpose]
 - [ ] Response types: [shape]
 - [ ] Error handling: [toast? inline? retry?]
 

@@ -9,7 +9,7 @@
 # `make <that target>`. Keep these comments in sync with the checklist.
 
 .DEFAULT_GOAL := help
-.PHONY: help dev start lint typecheck build pre-commit verify
+.PHONY: help dev start lint install typecheck build pre-commit verify
 
 help: ## List targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -21,6 +21,9 @@ dev: ## Start the Next.js dev server
 
 start: ## Serve the production build
 	pnpm run start
+
+install: ## Run installation
+	pnpm install
 
 # --- Quality gates (verify: actions live in docs/qa/feature-qa-checklist.md) -
 # R-GATE-LINT — ESLint reports no errors.            verify: `make lint` exits 0.
