@@ -1,5 +1,21 @@
 # Claude.md - SAID-next Development Guide
 
+## Lane
+
+**SAID lane:** single — this project is one lane.
+
+> **Two mounts, one lane.** `web/` and `server/` are code mounts of a **single** SAID lane — there is one `docs/features/` and one task log covering both. Use **`said!`**, not `flow!`. `flow!` is for a feature spanning two or more *task logs*, which having two mounts does not create. This is the most commonly misread shape.
+
+- **Docs root** — `docs/`
+- **Code mount(s)** — `web/`, `server/`
+- **Feature spec** — `docs/features/<id>.md`
+- **Task log** — `docs/features/<id>.tasks.md` (flat)
+- **Working dir** — `docs/working/<id>/`
+- **Task-id shape** — `<FEAT><NN>-NEXT-<NN>`
+- **ADR prefix** — `ADR-NEXT-*` (system tier `-SNN-`)
+
+A **lane** is a tree that owns a full SAID cycle — its own feature specs, task log, working dir and ADRs. A lane is **not a mount**.
+
 ## Project Overview
 **Project**: SAID-next — Next.js SSR + headless-CMS starter template
 **Vision**: Next.js 16 App Router + React 19.2, TypeScript strict, single styling layer (project's choice), file-based MDX content, headless CMS

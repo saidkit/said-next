@@ -1,4 +1,4 @@
-# SAID-next - Smart AI Development for Next.js
+# SAID-next - Software AI Delivery for Next.js
 
 AI-native **Next.js 16** starter: RSC-first, contract-driven content, ships as a standalone container. Self-contained - its own conventions, ADRs, scaffold, and AI development guide (`CLAUDE.md`).
 
