@@ -22,7 +22,7 @@ One file per screen archetype. A common set:
 - `fields.md` — field-type rendering conventions
 
 The template ships this README + the mechanical checklist
-([`../qa/feature-ux-checklist.md`](../qa/feature-ux-checklist.md)); author concrete
+([`feature-ux-checklist.md`](feature-ux-checklist.md)); author concrete
 screen specs as your product takes shape — they are inherently project-specific.
 
 ## Rules

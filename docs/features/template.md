@@ -1,5 +1,7 @@
 # <FEAT>-<NN>: [Feature Name]
 
+**Surface:** `<medium | none>` — inherits the lane `SAID.surface:` (`web`); set `none` to opt this feature out of the uxtoc basis→contract lifecycle (`architect` folds no outline into §AC and the accept-time `completeness` Checker SKIPs). A surface-bearing feature with a persisted outline is CHECKed; one whose outline is *missing* FAILs — absence is never a silent skip (the SAID uxtoc basis→contract lifecycle).
+
 ## Context to load alongside this spec
 - `docs/ux/<spec>.md` - <why it applies>
 - `docs/adr/<ADR-NEXT-XXX>.md` - <why it applies>
