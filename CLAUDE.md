@@ -15,6 +15,8 @@ Single lane — this project is one lane.
   - recorded verbatim (carries a `-NEXT-` app segment); e.g. FEAT01-NEXT-02
 - SAID.adr-prefix:   ADR-NEXT-*
   - system tier `ADR-NEXT-SNN-*`
+- SAID.template-version: said-next@1.0.0
+  - the starter release this project is based on (stamped at clone, bumped at upgrade); see `CHANGELOG.md`. Additive — an absent key means unversioned, never a halt.
 - SAID.surface:      web
   - the medium this lane ships (Next.js SSR screens); required, no default — an omitted key HALTs (the SAID surface-Checker model)
 - SAID.reviewers:    [web-ux, completeness]
