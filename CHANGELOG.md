@@ -1,8 +1,12 @@
 # Changelog — said-next
 
 The releases of this Next.js SAID starter, newest first. A cloned project records
-which release it is based on in its `## Lane` block (`SAID.template-version:`);
+which release it is based on in its `## Lane` block (`SAID.version:`, the line under `SAID.lane:`);
 this file says what each release is.
+
+## said-next@1.0.1 — 2026-09-06
+
+- The version marker key is `SAID.version:` (was `template-version`) and sits directly under `SAID.lane:`. Value shape and meaning unchanged; an absent or old key still reads as unversioned.
 
 ## said-next@1.0.0 — 2026-09-04
 
