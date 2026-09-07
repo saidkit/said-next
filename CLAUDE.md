@@ -5,26 +5,19 @@
 Single lane — this project is one lane.
 
 - SAID.lane:         said-next
-- SAID.version:      said-next@1.0.1
-  - the starter release this project is based on (stamped at clone, bumped at upgrade); see `CHANGELOG.md`. Additive — an absent key means unversioned, never a halt.
+- SAID.version:      said-next@1.0.2
 - SAID.docs-root:    docs/
 - SAID.code-mount:   web/, server/
 - SAID.feature-spec: docs/features/<id>.md
 - SAID.task-log:     docs/features/<id>.tasks.md
-  - append-only; flat — one log covers both mounts
 - SAID.working:      docs/working/<id>/
 - SAID.id-shape:     <FEAT><NN>-NEXT-<NN>
-  - recorded verbatim (carries a `-NEXT-` app segment); e.g. FEAT01-NEXT-02
 - SAID.adr-prefix:   ADR-NEXT-*
-  - system tier `ADR-NEXT-SNN-*`
 - SAID.surface:      web
-  - the medium this lane ships (Next.js SSR screens); required, no default — an omitted key HALTs (the SAID surface-Checker model)
 - SAID.reviewers:    [web-ux, completeness]
-  - the Checkers that gate the surface (list read WHOLE; a surface-bearing lane declares ≥1). `web-ux` (browser, comparative) + `completeness` (oracle) both ship with the `said` plugin (the surface-Checker model + the uxtoc basis→contract lifecycle)
 - SAID.commands:     cd web && make pre-commit
-  - umbrella gate (`make lint` + `typecheck` + `build`; R-GATE-*)
 
-> **Two mounts, one lane.** `web/` and `server/` are code mounts of a **single** lane — one `docs/features/` and one task log cover both. Use **`said!`**, not `flow!`. `flow!` is for a feature spanning two or more *task logs*, which having two mounts does not create — the most commonly misread shape.
+Paths above are relative to this lane's root. `web/` and `server/` are two mounts of this one lane, so a feature here runs `said!`; `flow!` is for a feature spanning two or more task logs.
 
 A **lane** is a tree that owns a full SAID cycle — its own feature specs, task log, working dir and ADRs. A lane is **not a mount**.
 
