@@ -123,7 +123,7 @@ cd web && make pre-commit   # All gates (husky / CI entry point)
 7. **Commit** - Save to branch (only when asked)
 
 ## SAID workflow - the `said:` plugin
-This template is the **context spine** (`docs/conventions.md`, `docs/adr/`, `docs/features/`, `docs/wokring/`); the **`said:` plugin** drives the phases *over* that spine. Each command reads/writes the specific part of the context - invoke the phase you're in.
+This template is the **context spine** (`docs/conventions.md`, `docs/adr/`, `docs/features/`, `docs/working/`); the **`said:` plugin** drives the phases *over* that spine. Each command reads/writes the specific part of the context - invoke the phase you're in.
 
 - **Triage** (find where a bug/behavior lives) → `/said:triage`
 - **Phase 1 - Scope** → `/said:scope-refine` (from a handoff / current branch) or `/said:scope-grill` (ideate a thin idea) → writes `docs/working/<feature>/scope.md`
@@ -141,16 +141,24 @@ The **Workflow Process** above is the lightweight per-change loop; the `said:` p
 - **MVP First** - Working version, then improve
 - **Test Everything** - Untested code is broken code
 - **Type Safety** - Zod schemas for runtime validation, TypeScript for compile-time
-- **RSC by default** - data fetching on the server; `"use client"` only at the edges (handlers, hooks, browser APIs)
+
+## Significant ADRs (skill-referenced)
+
+The `said:` skills refer to system ADRs by descriptive shortname so the skill text stays project-agnostic. This table binds shortname → this lane's concrete ADR file. Update when a referenced ADR is renamed or renumbered.
+
+| Skill shortname | This project's ADR file | Consumed by |
+|---|---|---|
+| earn-its-place-ADR | — not yet promoted to an ADR; the threshold is stated in `docs/adr/README.md` ("affects multiple features or is hard to reverse") | `/said:review-qa`, `/said:debrief` |
+| feature-structure-ADR | `docs/adr/ADR-NEXT-S03-feature-structure.md` | a lane's rule lines / a task's `Refs:` |
+| service-adapter-ADR | `docs/adr/ADR-NEXT-S04-pure-service-modules.md` | a lane's rule lines / a task's `Refs:` |
 
 ## Claude Code Reminders
+- **Before each implementation step, re-read `## Earned rules` and name the ids you apply.**
 - **Context Management**: Start with this guide only, add incrementally
 - **File Loading**: Only load files you're actively editing
-- **Quality Gates**: Always run `make pre-commit` before marking complete
 - **Commit Policy**: NEVER commit without explicit user request
 - **Read First**: Always read files before editing them
-- **Styling**: one explicit styling layer — pick it once (Tailwind, a vendored DS, CSS Modules…); never run a second competing framework
-- **Diagrams**: Use Mermaid or nested outlines - NEVER ASCII art/pseudographics
+- **Diagrams**: Mermaid or nested outlines — NEVER ASCII/Unicode box-drawing characters
 - **Markdown**: one line per paragraph; bullets one line each; no hard-wrap; prefer lists over tables - use tables only when necessary
 
 ## Task Log Rules (NEXT-XX.tasks.md)
@@ -164,21 +172,8 @@ Critical rules (full set in template-tasks.md):
 - **When adding new tasks**: Append new `## FEATXX-NEXT-NN` sections at the end. Never reorganize or renumber existing tasks.
 - **Fix sections**: Document what was actually done, including deviations from the approach, bugs found, and outcomes. This is the implementation record.
 
-## Documentation Rules
-IMPORTANT: NEVER use ASCII/Unicode box-drawing characters for diagrams.
-Use instead:
-1. **Mermaid** (preferred for complex flows)
-2. **Nested outlines** (simpler alternative)
-
 ## Quality Gates
-Before marking complete:
-- [ ] `make lint` clean — R-GATE-LINT
-- [ ] `make typecheck` clean — R-GATE-TYPECHECK
-- [ ] `make build` succeeds — R-GATE-BUILD
-- [ ] Feature / task log updated
-- [ ] No merge conflicts
-
-`make pre-commit` runs all three (`.husky/pre-commit` + CI entry point). Rule defs: `docs/qa/feature-qa-checklist.md`.
+Before marking complete: the three gate rules now live in `## Earned rules` (**R-GATE-LINT** · **R-GATE-TYPECHECK** · **R-GATE-BUILD**) and run together as `make pre-commit` (`.husky/pre-commit` + CI entry point); also confirm the feature / task log is updated and there are no merge conflicts. Rule defs: `docs/qa/feature-qa-checklist.md`.
 
 ---
 
@@ -187,18 +182,21 @@ Before marking complete:
 ---
 
 ## Earned rules (full context in linked ADR)
-- **A page composes, it doesn't implement** — routes are thin entry points that call features + shared components → ADR-NEXT-S01
-- **RSC by default** — `"use client"` only at the edges (handlers, hooks, browser APIs) → ADR-NEXT-S01
-- **Static by default** — SSG for owned pages; ISR (`revalidate`) for external/CMS content; dynamic only per-request → ADR-NEXT-S07
-- **SEO rides the content contract** — `post.seo` on the S04 contract; `generateMetadata` / `sitemap` read it, adapters fill it; no vendor SEO calls in routes → ADR-NEXT-S07
-- **Ship a CI-built standalone container** — `output: "standalone"`; the gated `make build` inside the image is the shipped artifact; runtime env validated at boot; freshness = ISR, not redeploy → ADR-NEXT-S06
-- **Client state is a server-seeded residue** — escalate local → URL → Context → store; no global store, no client data cache; providers are `"use client"` islands seeded from the server (theme via pre-hydration script stays SSG) → ADR-NEXT-S08
-- **Service-module seam** — external systems (CMS, APIs) sit behind pure modules in `web/src/lib/<service>/`; no raw fetch/SDK calls scattered across routes/UI → ADR-NEXT-S04
-- **Content is file-based** — read `web/content/` via a `web/src/lib/` loader, not inline in routes → ADR-NEXT-S01
-- **One styling layer** — a single explicit styling layer (the project's choice); no second framework competing with it → ADR-NEXT-S01
-- **Cross-feature wiring** — features never import another feature's internals; inject via a `Deps` interface at the route/server composition point → ADR-NEXT-S05
-- **Errors: missing vs broken** — `notFound()` → `not-found.tsx` for expected; `throw` → `error.tsx` for unexpected; expected Server Action failures are returned, not thrown → ADR-NEXT-S09
-- **Imports** — `@/` for `web/src/*`; relative only within a feature/route folder; `web/src/lib/` never imports from `web/src/app/` → ADR-NEXT-S01
+- **R-NEXT-01** — **A page composes, it doesn't implement** — routes are thin entry points that call features + shared components → `docs/adr/ADR-NEXT-S01-repository-structure.md`
+- **R-NEXT-02** — **RSC by default** — `"use client"` only at the edges (handlers, hooks, browser APIs) → `docs/adr/ADR-NEXT-S01-repository-structure.md`
+- **R-NEXT-03** — **Static by default** — SSG for owned pages; ISR (`revalidate`) for external/CMS content; dynamic only per-request → `docs/adr/ADR-NEXT-S07-rendering-performance-seo.md`
+- **R-NEXT-04** — **SEO rides the content contract** — `post.seo` on the S04 contract; `generateMetadata` / `sitemap` read it, adapters fill it; no vendor SEO calls in routes → `docs/adr/ADR-NEXT-S07-rendering-performance-seo.md`
+- **R-NEXT-05** — **Ship a CI-built standalone container** — `output: "standalone"`; the gated `make build` inside the image is the shipped artifact; runtime env validated at boot; freshness = ISR, not redeploy → `docs/adr/ADR-NEXT-S06-deployment.md`
+- **R-NEXT-06** — **Client state is a server-seeded residue** — escalate local → URL → Context → store; no global store, no client data cache; providers are `"use client"` islands seeded from the server (theme via pre-hydration script stays SSG) → `docs/adr/ADR-NEXT-S08-client-shared-state.md`
+- **R-NEXT-07** — **Service-module seam** — external systems (CMS, APIs) sit behind pure modules in `web/src/lib/<service>/`; no raw fetch/SDK calls scattered across routes/UI → `docs/adr/ADR-NEXT-S04-pure-service-modules.md`
+- **R-NEXT-08** — **Content is file-based** — read `web/content/` via a `web/src/lib/` loader, not inline in routes → `docs/adr/ADR-NEXT-S01-repository-structure.md`
+- **R-NEXT-09** — **One styling layer** — a single explicit styling layer (the project's choice); no second framework competing with it → `docs/adr/ADR-NEXT-S01-repository-structure.md`
+- **R-NEXT-10** — **Cross-feature wiring** — features never import another feature's internals; inject via a `Deps` interface at the route/server composition point → `docs/adr/ADR-NEXT-S05-dependency-injection.md`
+- **R-NEXT-11** — **Errors: missing vs broken** — `notFound()` → `not-found.tsx` for expected; `throw` → `error.tsx` for unexpected; expected Server Action failures are returned, not thrown → `docs/adr/ADR-NEXT-S09-error-handling.md`
+- **R-NEXT-12** — **Imports** — `@/` for `web/src/*`; relative only within a feature/route folder; `web/src/lib/` never imports from `web/src/app/` → `docs/adr/ADR-NEXT-S01-repository-structure.md`
+- **R-GATE-LINT** — `cd web && make lint` clean before a task is marked complete → `docs/qa/feature-qa-checklist.md`
+- **R-GATE-TYPECHECK** — `cd web && make typecheck` clean before a task is marked complete → `docs/qa/feature-qa-checklist.md`
+- **R-GATE-BUILD** — `cd web && make build` succeeds before a task is marked complete → `docs/qa/feature-qa-checklist.md`
 
 
 <!-- PROJECT-SPECIFIC SECTION — intentionally empty in the said-nextjs starter.
