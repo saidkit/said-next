@@ -16,7 +16,7 @@ Single lane — this project is one lane.
 - SAID.surface:      web
 - SAID.reviewers:    [web-ux, completeness]
 - SAID.commands:     cd web && make pre-commit
-- SAID.impl-profile: code
+- SAID.profile:      code
 
 Paths above are relative to this lane's root. `web/` and `server/` are two mounts of this one lane, so a feature here runs `said!`; `flow!` is for a feature spanning two or more task logs.
 
