@@ -83,12 +83,12 @@ does not fork):
 ```
 said-checker:   completeness
 said-governs:   surface=web               # fires on a feature that bears a surface (per the feature `Surface:`)
-said-capture:   elements+built-evidence   # the persisted docs/working/<feature>/toc-elements.md (normalized) + built-surface evidence
+said-capture:   elements+built-evidence   # docs/working/<feature>/toc.md (the single source, parsed via the element-projection taxonomy) + built-surface evidence
 said-judge:     oracle
 said-recompute: python3 "$SAID_PLUGIN_ROOT/skills/status/said_completeness.py"   # designed ⊆ (built ∪ accounted-drops)
 ```
 
 - **Applicability** — the feature-level bearing gate: bears-surface + outline present → CHECK; bears-surface + outline **missing** → FAIL; `Surface: none` → SKIP.
 - **Judge = `oracle`** — the L2 oracle **recomputes** the set comparison from the outline + evidence rather than trusting the L1 `verdict`, so a fabricated `PASS` fails recompute.
-- **DESIGNED** — the persisted normalized element list `docs/working/<feature>/toc-elements.md` (`## <Screen>` the only header; every other non-blank line one screen-qualified element id). The raw `uxtoc` `toc.md` is the upstream design aid the operator normalizes from; `uxtoc` is untouched.
-- **Charter** — the Checker READS the element list + evidence, never writes them (persistence is an operator action).
+- **DESIGNED (re-derived)** — parsed from the single source `docs/working/<feature>/toc.md` via the **element-projection taxonomy** (the plugin's fixed rule for turning a `uxtoc` outline into a set of screen-qualified `(screen, element-id)` pairs): a `## <Screen>`-grouping header opens a screen; an element is a valueless keyed line under a taxonomy container header. DESIGNED is a set of `(screen, key)` pairs, re-derived from `toc.md` every run — never from a persisted intermediate.
+- **Charter** — the Checker READS `toc.md` + the built-surface evidence, never writes them. **No intermediate is persisted** — `uxtoc` self-certifies its own emission with a `toc-checksum:` line, and the check verifies that count against its own re-parse, FAILing "re-run uxtoc" on a mismatch (an accidental hand-edit signal).
