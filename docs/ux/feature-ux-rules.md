@@ -82,13 +82,14 @@ does not fork):
 
 ```
 said-checker:   completeness
-said-governs:   surface=web               # fires on a feature that bears a surface (per the feature `Surface:`)
-said-capture:   elements+built-evidence   # docs/working/<feature>/toc.md (the single source, parsed via the element-projection taxonomy) + built-surface evidence
+said-governs:   surface=web             # fires on a feature that bears a surface (per the feature `Surface:`)
+said-capture:   process-spawn          # oracle-tier containers observed by executing the surface's own probe read-only (from the capture manifest's per-unit cmd:); non-oracle containers stay declared-evidence in the same manifest, which remains the cited capture-evidence-ref
 said-judge:     oracle
 said-recompute: python3 "$SAID_PLUGIN_ROOT/skills/status/said_completeness.py"   # designed ⊆ (built ∪ accounted-drops)
+said-env:       SAID_GRAMMAR;SAID_SURFACE   # the per-surface lane grammar path (docs/ux/feature-ux-grammar.md) + section selector, injected by the oracle; the check reads unit + containers + attribute set from it
 ```
 
 - **Applicability** — the feature-level bearing gate: bears-surface + outline present → CHECK; bears-surface + outline **missing** → FAIL; `Surface: none` → SKIP.
 - **Judge = `oracle`** — the L2 oracle **recomputes** the set comparison from the outline + evidence rather than trusting the L1 `verdict`, so a fabricated `PASS` fails recompute.
-- **DESIGNED (re-derived)** — parsed from the single source `docs/working/<feature>/toc.md` via the **element-projection taxonomy** (the plugin's fixed rule for turning a `uxtoc` outline into a set of screen-qualified `(screen, element-id)` pairs): a `## <Screen>`-grouping header opens a screen; an element is a valueless keyed line under a taxonomy container header. DESIGNED is a set of `(screen, key)` pairs, re-derived from `toc.md` every run — never from a persisted intermediate.
-- **Charter** — the Checker READS `toc.md` + the built-surface evidence, never writes them. **No intermediate is persisted** — `uxtoc` self-certifies its own emission with a `toc-checksum:` line, and the check verifies that count against its own re-parse, FAILing "re-run uxtoc" on a mismatch (an accidental hand-edit signal).
+- **DESIGNED (re-derived)** — parsed from the single source `docs/working/<feature>/toc.md` via the **element-projection RULE** (the plugin's medium-agnostic rule) + the **injected lane grammar** (`SAID_GRAMMAR`/`SAID_SURFACE` → `docs/ux/feature-ux-grammar.md`): a `## <unit> <ID> - ...` line opens a unit (the `unit` word from the grammar — here `Screen`); an element is a valueless keyed line under one of the grammar's declared containers, UNLESS its key is in the grammar's **attribute set** or **not-elements** scaffolding set (then it is a non-element group and does not disqualify its parent from being a leaf). DESIGNED is a set of unit-qualified `(unit, key)` pairs, re-derived from `toc.md` + the grammar every run — never from a persisted intermediate.
+- **Charter** — the Checker READS `toc.md` + the grammar + the built evidence, never writes them. **No toc seal** — the operator hand-edits `toc.md` freely and no check fails on a legitimate design edit (the retired `toc-checksum:` self-cert fought the operator-editable substrate and was same-count-blind). The two bounded exceptions are the machine-written `grammar:<token>` stamp (cross-checked at verify; an absent stamp FAILs, so the wrong-grammar tooth is not opt-out by deletion) and a unit yielding zero designed elements (a hollow FAIL). No intermediate is persisted.
