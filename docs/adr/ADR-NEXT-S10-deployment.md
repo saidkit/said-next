@@ -1,4 +1,4 @@
-# ADR-NEXT-S06: Deployment (Next.js SSR)
+# ADR-NEXT-S10: Deployment (Next.js SSR)
 
 **Date:** 2026-06-29
 **Status:** Accepted
