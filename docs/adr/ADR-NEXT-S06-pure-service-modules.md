@@ -1,4 +1,4 @@
-# ADR-NEXT-S10: Pure Service Modules (external systems behind a contract)
+# ADR-NEXT-S06: Pure Service Modules (external systems behind a contract)
 
 **Date:** 2026-06-23
 **Status:** Accepted
