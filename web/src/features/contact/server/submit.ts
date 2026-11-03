@@ -27,7 +27,7 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   }
 
   // A real app hands off to a service module here (an email provider behind a
-  // typed contract, ADR-NEXT-S04) and would `revalidatePath(...)` if needed.
+  // typed contract, ADR-NEXT-S06) and would `revalidatePath(...)` if needed.
   // await sendMessage(parsed.data);
 
   return { ok: true, message: "Thanks — we'll be in touch." };

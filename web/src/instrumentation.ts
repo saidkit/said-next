@@ -1,6 +1,6 @@
 /**
  * Validate runtime env once at boot, before the server accepts traffic
- * (ADR-NEXT-S06). A bad config crashes startup — the container never becomes
+ * (ADR-NEXT-S10). A bad config crashes startup — the container never becomes
  * healthy — instead of surfacing as a request-time 500 through the S09 boundary.
  */
 export async function register() {

@@ -9,7 +9,7 @@ categories: [meta, starter]
 ## Welcome
 
 This post lives in `content/blog/` and is served by the **MDX adapter**
-(`src/lib/cms/mdx.ts`) through the `CmsClient` contract (ADR-NEXT-S04).
+(`src/lib/cms/mdx.ts`) through the `CmsClient` contract (ADR-NEXT-S06).
 
 Set `CMS_CLIENT=wordpress` and `WORDPRESS_API_URL=…` and the same routes render
 from WordPress instead — no route or component changes (ADR-NEXT-S05). The
@@ -21,4 +21,4 @@ ready for derived projects.
 - **Content contract** — one `CmsClient` interface, swappable adapters (MDX, WordPress).
 - **SEO on the contract** — `post.seo` drives `generateMetadata`, JSON-LD, and `sitemap.ts` (ADR-NEXT-S07).
 - **Boundaries** — `error.tsx` / `not-found.tsx` / `loading.tsx` (ADR-NEXT-S09).
-- **Deployment** — standalone container, `/api/health`, boot-time env validation (ADR-NEXT-S06).
+- **Deployment** — standalone container, `/api/health`, boot-time env validation (ADR-NEXT-S10).

@@ -40,9 +40,9 @@ Start with **this file only**. Then load deeper context by task — see **Implem
 | Repo structure / where code goes                                    | `docs/adr/ADR-NEXT-S01-repository-structure.md`       |
 | Frontend stack (framework, validation, styling policy, data/state)  | `docs/adr/ADR-NEXT-S02-frontend-stack.md`             |
 | Feature internals (anatomy, naming, RSC boundary, imports)          | `docs/adr/ADR-NEXT-S03-feature-structure.md`          |
-| External systems / service modules (CMS, API)                       | `docs/adr/ADR-NEXT-S04-pure-service-modules.md`       |
+| External systems / service modules (CMS, API)                       | `docs/adr/ADR-NEXT-S06-pure-service-modules.md`       |
 | Cross-feature dependencies / wiring                                 | `docs/adr/ADR-NEXT-S05-dependency-injection.md`       |
-| Build / deploy / CI / env / container                               | `docs/adr/ADR-NEXT-S06-deployment.md`                 |
+| Build / deploy / CI / env / container                               | `docs/adr/ADR-NEXT-S10-deployment.md`                 |
 | Rendering / caching / SEO (SSG·ISR·dynamic, metadata)               | `docs/adr/ADR-NEXT-S07-rendering-performance-seo.md`  |
 | Client & shared state (theme, session-for-UI, providers)            | `docs/adr/ADR-NEXT-S08-client-shared-state.md`        |
 | Error / loading / not-found boundaries                              | `docs/adr/ADR-NEXT-S09-error-handling.md`             |
@@ -50,7 +50,7 @@ Start with **this file only**. Then load deeper context by task — see **Implem
 | Architecture overview                                               | `docs/vision.md`                                      |
 | Feature spec template                                               | `docs/features/template.md`                           |
 | Editing a specific feature                                          | `docs/features/NEXT-XX-name.md`                       |
-| Content / CMS integration (the copy-paste lib)                      | `web/src/lib/cms/` (ADR-NEXT-S04)                     |
+| Content / CMS integration (the copy-paste lib)                      | `web/src/lib/cms/` (ADR-NEXT-S06)                     |
 | Screen UX shape                                                     | `docs/ux/README.md`                                   |
 | Screen UX review gate                                               | `docs/ux/feature-ux-checklist.md`                     |
 
@@ -150,7 +150,7 @@ The `said:` skills refer to STARTER ADRs by descriptive shortname so the skill t
 |---|---|---|
 | earn-its-place-ADR | — not yet promoted to an ADR; the threshold is stated in `docs/adr/README.md` ("affects multiple features or is hard to reverse") | `/said:review-qa`, `/said:debrief` |
 | feature-structure-ADR | `docs/adr/ADR-NEXT-S03-feature-structure.md` | a lane's rule lines / a task's `Refs:` |
-| service-adapter-ADR | `docs/adr/ADR-NEXT-S04-pure-service-modules.md` | a lane's rule lines / a task's `Refs:` |
+| service-adapter-ADR | `docs/adr/ADR-NEXT-S06-pure-service-modules.md` | a lane's rule lines / a task's `Refs:` |
 
 ## Claude Code Reminders
 - **Before each implementation step, re-read `## Earned rules` and name the ids you apply.**
@@ -186,9 +186,9 @@ Before marking complete: the three gate rules now live in `## Earned rules` (**R
 - **R-NEXT-02** — **RSC by default** — `"use client"` only at the edges (handlers, hooks, browser APIs) → `docs/adr/ADR-NEXT-S01-repository-structure.md`
 - **R-NEXT-03** — **Static by default** — SSG for owned pages; ISR (`revalidate`) for external/CMS content; dynamic only per-request → `docs/adr/ADR-NEXT-S07-rendering-performance-seo.md`
 - **R-NEXT-04** — **SEO rides the content contract** — `post.seo` on the S04 contract; `generateMetadata` / `sitemap` read it, adapters fill it; no vendor SEO calls in routes → `docs/adr/ADR-NEXT-S07-rendering-performance-seo.md`
-- **R-NEXT-05** — **Ship a CI-built standalone container** — `output: "standalone"`; the gated `make build` inside the image is the shipped artifact; runtime env validated at boot; freshness = ISR, not redeploy → `docs/adr/ADR-NEXT-S06-deployment.md`
+- **R-NEXT-05** — **Ship a CI-built standalone container** — `output: "standalone"`; the gated `make build` inside the image is the shipped artifact; runtime env validated at boot; freshness = ISR, not redeploy → `docs/adr/ADR-NEXT-S10-deployment.md`
 - **R-NEXT-06** — **Client state is a server-seeded residue** — escalate local → URL → Context → store; no global store, no client data cache; providers are `"use client"` islands seeded from the server (theme via pre-hydration script stays SSG) → `docs/adr/ADR-NEXT-S08-client-shared-state.md`
-- **R-NEXT-07** — **Service-module seam** — external systems (CMS, APIs) sit behind pure modules in `web/src/lib/<service>/`; no raw fetch/SDK calls scattered across routes/UI → `docs/adr/ADR-NEXT-S04-pure-service-modules.md`
+- **R-NEXT-07** — **Service-module seam** — external systems (CMS, APIs) sit behind pure modules in `web/src/lib/<service>/`; no raw fetch/SDK calls scattered across routes/UI → `docs/adr/ADR-NEXT-S06-pure-service-modules.md`
 - **R-NEXT-08** — **Content is file-based** — read `web/content/` via a `web/src/lib/` loader, not inline in routes → `docs/adr/ADR-NEXT-S01-repository-structure.md`
 - **R-NEXT-09** — **One styling layer** — a single explicit styling layer (the project's choice); no second framework competing with it → `docs/adr/ADR-NEXT-S01-repository-structure.md`
 - **R-NEXT-10** — **Cross-feature wiring** — features never import another feature's internals; inject via a `Deps` interface at the route/server composition point → `docs/adr/ADR-NEXT-S05-dependency-injection.md`

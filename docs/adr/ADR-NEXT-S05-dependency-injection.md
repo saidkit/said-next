@@ -4,7 +4,7 @@
 **Status:** Accepted
 **Class:** System (portable across Next.js SSR web projects)
 
-> In RSC, DI is **light** — most features take only their own service/config; a `Deps` interface is reserved for genuine cross-feature needs. This ADR is the *how* behind [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md)'s "features never import another feature's internals," and the injected-services half of [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md).
+> In RSC, DI is **light** — most features take only their own service/config; a `Deps` interface is reserved for genuine cross-feature needs. This ADR is the *how* behind [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md)'s "features never import another feature's internals," and the injected-services half of [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md).
 
 ## Problem
 
@@ -14,7 +14,7 @@ The server-style answer — a single composition root that wires every feature u
 
 **Context:**
 - RSC by default; routes (`src/app/<route>/page.tsx`) are the per-request entry points — the natural composition seam (ADR-NEXT-S01: "a page composes; it doesn't implement").
-- A feature's own service / external client is resolved via a factory (ADR-NEXT-S04), not held as a cross-feature singleton.
+- A feature's own service / external client is resolved via a factory (ADR-NEXT-S06), not held as a cross-feature singleton.
 - Features must stay sideways-independent (ADR-NEXT-S01) and unit-testable without a route, a request, or the network.
 - Cross-feature needs are the exception, not the rule — the mechanism must stay near-zero-cost when absent.
 
@@ -26,7 +26,7 @@ The mechanics live as numbered rules below; full how-to (the `server/` boundary,
 
 ## Rules
 
-1. **RSC DI is light — default to the feature's own service/config.** Most features need nothing from another feature: their `server/` logic takes only its own service (resolved via the ADR-NEXT-S04 factory) and/or `config`, and passes data down as props. Do NOT add a `Deps` interface "for consistency." Reach for one ONLY when a feature genuinely needs a function that another feature owns.
+1. **RSC DI is light — default to the feature's own service/config.** Most features need nothing from another feature: their `server/` logic takes only its own service (resolved via the ADR-NEXT-S06 factory) and/or `config`, and passes data down as props. Do NOT add a `Deps` interface "for consistency." Reach for one ONLY when a feature genuinely needs a function that another feature owns.
 
 2. **Declare `Deps` in the factory file, next to the factory — not in `types/`.** When a feature's server logic does need cross-feature functions, it declares a `Deps` interface co-located with the factory in its `server/` module. `Deps` is this feature's *consumption contract* (what it needs from elsewhere), not a shared domain type, so it does not belong in the feature's `types/`.
 
@@ -112,7 +112,7 @@ The mechanics live as numbered rules below; full how-to (the `server/` boundary,
 
    When the real feature ships: delete the stub, inject the real function. Zero changes to the consumer.
 
-6. **Know when NOT to use DI.** (a) **No cross-feature deps** → skip `Deps`; pass the feature's own service/config (Rule 1). (b) **A domain-agnostic utility in `src/lib/*`** (formatting, error helpers, a shared pure function) → import it directly; a shared util is not a cross-feature dependency. (c) **An external-system client** → resolve it via its ADR-NEXT-S04 factory at the composition point and inject the *contract*; don't `new` an adapter inside feature logic.
+6. **Know when NOT to use DI.** (a) **No cross-feature deps** → skip `Deps`; pass the feature's own service/config (Rule 1). (b) **A domain-agnostic utility in `src/lib/*`** (formatting, error helpers, a shared pure function) → import it directly; a shared util is not a cross-feature dependency. (c) **An external-system client** → resolve it via its ADR-NEXT-S06 factory at the composition point and inject the *contract*; don't `new` an adapter inside feature logic.
 
 7. **Cross-feature imports: types yes, services/server modules no.** A feature's server logic may import another feature's `types/` (type-only) — `Deps` signatures lean on those. It may NOT import another feature's service or `server/` module; that dependency flows through `Deps` and is wired at the composition point.
 
@@ -133,7 +133,7 @@ The mechanics live as numbered rules below; full how-to (the `server/` boundary,
 - Use Vitest `vi.fn()` for assertable deps
 - Stub a missing dep as an inline no-op at the composition point
 - Import another feature's `types/` (type-only)
-- Resolve external clients via the ADR-NEXT-S04 factory and inject the contract
+- Resolve external clients via the ADR-NEXT-S06 factory and inject the contract
 
 **DON'T**
 - Don't add an empty/placeholder `Deps` "for consistency"
@@ -169,6 +169,6 @@ The mechanics live as numbered rules below; full how-to (the `server/` boundary,
 
 - **Source:** said-ts server ADR-S05 (dependency injection) — re-cast from a single MCP/Hono composition root to the Next RSC route / `server/` boundary.
 - **Dependency direction:** [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md) — declares "features never import another feature's internals"; this ADR is the *how* (inject via `Deps`, wire at the composition point).
-- **Service modules:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) — external clients are resolved via their factory and injected as the contract (the same seam, for external systems).
+- **Service modules:** [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) — external clients are resolved via their factory and injected as the contract (the same seam, for external systems).
 - **Feature structure:** ADR-NEXT-S03 (feature anatomy — `server/`, `types/`; planned) — where `Deps` factories and feature services live.
 - **Conventions:** [conventions.md](../conventions.md) — cross-feature import rules, the server/client boundary, and Vitest.

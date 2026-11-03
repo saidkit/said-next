@@ -1,10 +1,10 @@
-# ADR-NEXT-S06: Pure Service Modules (external systems behind a contract)
+# ADR-NEXT-S10: Pure Service Modules (external systems behind a contract)
 
 **Date:** 2026-06-23
 **Status:** Accepted
 **Class:** System (portable across Next.js SSR web projects)
 
-> Adapted from `said-ts` ADR-NEXT-S04 (pure service modules) — re-cast from Bun/Hono/MCP to Next.js RSC. Service modules are **consumed via dependency injection — see ADR-NEXT-S05** (a day-one citizen, not folded here). Governs `src/lib/<service>/` per [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md).
+> Adapted from `said-ts` ADR-NEXT-S06 (pure service modules) — re-cast from Bun/Hono/MCP to Next.js RSC. Service modules are **consumed via dependency injection — see ADR-NEXT-S05** (a day-one citizen, not folded here). Governs `src/lib/<service>/` per [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md).
 
 ## Rule
 
@@ -116,6 +116,6 @@ The CMS wrapper in the repos library is the first instance: `CmsClient` contract
 
 ## Related
 
-- **Source:** `said-ts` ADR-NEXT-S04 (pure service modules) + ADR-NEXT-S05 (dependency injection).
+- **Source:** `said-ts` ADR-NEXT-S06 (pure service modules) + ADR-NEXT-S05 (dependency injection).
 - **Dependency injection:** ADR-NEXT-S05 — services are injected, not imported (day-one).
 - **Lives under:** ADR-NEXT-S01 (repository structure) — `src/lib/<service>/`.

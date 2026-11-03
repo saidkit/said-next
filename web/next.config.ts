@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone", // self-contained Node server, container-deployable (ADR-NEXT-S06)
-  // Trace non-JS files read at request time so the standalone build ships them (ADR-NEXT-S06 R5).
+  output: "standalone", // self-contained Node server, container-deployable (ADR-NEXT-S10)
+  // Trace non-JS files read at request time so the standalone build ships them (ADR-NEXT-S10 R5).
   outputFileTracingIncludes: {
     "/**": ["./content/**/*"],
   },

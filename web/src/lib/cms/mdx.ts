@@ -1,5 +1,5 @@
 /**
- * MDX adapter (ADR-NEXT-S04) — the default content source that ships with the
+ * MDX adapter (ADR-NEXT-S06) — the default content source that ships with the
  * template. Reads `content/blog/*.mdx`, maps frontmatter → `Post` + `Seo`.
  * No network; deterministic; the reference implementation of `CmsClient`.
  */

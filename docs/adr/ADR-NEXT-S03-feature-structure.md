@@ -4,7 +4,7 @@
 **Status:** Accepted
 **Class:** System (portable across Next.js SSR web projects)
 
-> Companion to [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md): S01 says *where* code lives (`src/features/<name>/` is the unit of implementation); this ADR says *what's inside* a feature and how its parts divide along the **RSC / client boundary**. A feature's `server/` resolves data through injected service modules — see [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) and ADR-NEXT-S05 (dependency injection).
+> Companion to [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md): S01 says *where* code lives (`src/features/<name>/` is the unit of implementation); this ADR says *what's inside* a feature and how its parts divide along the **RSC / client boundary**. A feature's `server/` resolves data through injected service modules — see [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) and ADR-NEXT-S05 (dependency injection).
 
 ## Problem
 
@@ -15,7 +15,7 @@ The structure must scale from a static presentational section (components only) 
 **Context:**
 - App Router + React Server Components by default; `"use client"` only at interactive edges.
 - A feature is the unit of implementation (ADR-NEXT-S01); routes (`src/app/<route>/page.tsx`) compose features.
-- Data is resolved on the server, in the feature's `server/`, via service modules injected per ADR-NEXT-S04 / ADR-NEXT-S05 — not fetched ad-hoc in components.
+- Data is resolved on the server, in the feature's `server/`, via service modules injected per ADR-NEXT-S06 / ADR-NEXT-S05 — not fetched ad-hoc in components.
 - No global client store and no SPA router: client state is local or URL-driven; routing is the App Router.
 - Optimised for humans and LLMs finding code by convention.
 
@@ -90,7 +90,7 @@ findable; eight tabs named `Card.tsx` are not. The convention also *signals the 
 flowchart LR
   page["app/{route}/page.tsx<br/>(composes · RSC)"]
   server["features/{name}/server/*<br/>(resolves data · cache())"]
-  lib["lib/* — services, utils<br/>(ADR-NEXT-S04 / S05)"]
+  lib["lib/* — services, utils<br/>(ADR-NEXT-S06 / S05)"]
   ext["external<br/>(CMS, …)"]
   comp["features/{name}/components/*<br/>(RSC · render via props)"]
   hook["hooks/use{Name}.ts<br/>(&quot;use client&quot; leaves)"]
@@ -105,9 +105,9 @@ The route resolves dependencies and composes the feature; `server/` resolves dat
 ## Rules
 
 1. **Everything in `src/features/<name>/`.** A cohesive capability owns its components, server loaders, hooks, and types here — never at `src/` root, never inline in a route.
-2. **Routes compose; features implement.** `src/app/<route>/page.tsx` is the only route target — it resolves dependencies (services via factories, ADR-NEXT-S04 / ADR-NEXT-S05) and composes the feature. There is no `screens/` folder; App Router routes already are the entry points.
+2. **Routes compose; features implement.** `src/app/<route>/page.tsx` is the only route target — it resolves dependencies (services via factories, ADR-NEXT-S06 / ADR-NEXT-S05) and composes the feature. There is no `screens/` folder; App Router routes already are the entry points.
 3. **`components/` are React Server Components by default.** Prop-driven, no data fetching. Add `"use client"` only when a leaf needs interactivity or browser APIs — keep client components small and push them to the edges of the tree.
-4. **`server/` resolves data, server-only.** Loaders fetch and shape through injected service modules (ADR-NEXT-S04), return domain types, and wrap reads in React `cache()` for per-request memoization. `server/` never returns JSX and never runs on the client.
+4. **`server/` resolves data, server-only.** Loaders fetch and shape through injected service modules (ADR-NEXT-S06), return domain types, and wrap reads in React `cache()` for per-request memoization. `server/` never returns JSX and never runs on the client.
 5. **`hooks/` are client-only.** Each file starts with `"use client"` and owns state, effects, handlers, and browser APIs. A hook never imports from `server/` and never reads secrets. No global store: client state is local or URL-driven (`searchParams`); there is no `store/` folder.
 6. **File naming is fixed** (see *File naming*) — `PascalCase.tsx` components, `use<Name>.ts` client hooks, `kebab-case.ts` server modules, `<name>.types.ts` types.
 7. **Each file keeps to its responsibility** (see *File responsibilities*) — a component that fetches, a loader that returns JSX, or a hook that imports `server/` is a boundary violation, not a shortcut.
@@ -121,7 +121,7 @@ The route resolves dependencies and composes the feature; `server/` resolves dat
 1. Create `src/features/<name>/`.
 2. Add `components/`; add `server/`, `hooks/`, `types/` as the feature needs them.
 3. Define types in `types/<name>.types.ts`.
-4. Implement `server/` loaders — server-only, `cache()`-wrapped, resolving services via the injected contract (ADR-NEXT-S04 / ADR-NEXT-S05).
+4. Implement `server/` loaders — server-only, `cache()`-wrapped, resolving services via the injected contract (ADR-NEXT-S06 / ADR-NEXT-S05).
 5. Implement `components/` as RSC, prop-driven (no fetching).
 6. Add `hooks/` only where the UI needs client interactivity (`"use client"`).
 7. Expose a public API via `index.ts` only if another feature must consume this one.
@@ -147,7 +147,7 @@ The route resolves dependencies and composes the feature; `server/` resolves dat
 ## Related
 
 - **Lives under:** [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md) (repository structure) — `src/features/<name>/` is the unit of implementation; this ADR is its internal anatomy.
-- **Service modules:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) (pure service modules) — what a feature's `server/` calls (the `src/lib/<service>/` seam).
+- **Service modules:** [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) (pure service modules) — what a feature's `server/` calls (the `src/lib/<service>/` seam).
 - **Dependency injection:** ADR-NEXT-S05 — how `server/` receives services (injected per request, not module-scope singletons).
 - **Frontend stack:** ADR-NEXT-S02 — the Next.js / React 19.2 / RSC choices this anatomy assumes.
 - **Conventions:** [`../conventions.md`](../conventions.md) — full how-to for component / loader / hook patterns.

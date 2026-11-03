@@ -26,10 +26,10 @@ Boots in **MDX mode** by default - the seed post in `web/content/blog/` renders 
 - **`src/app/`** - routes: home, blog index + `[slug]`, `sitemap`/`robots`, `api/health`, `error`/`not-found`/`loading` boundaries
 - **`src/features/blog/`** - the reference feature: `server/` loaders (RSC + `cache()`), prop-driven components
 - **`src/lib/cms/`** - the **content contract** + adapters (see below)
-- **`src/lib/env.ts` + `src/instrumentation.ts`** - boot-time env validation (fail-fast, ADR-NEXT-S06)
+- **`src/lib/env.ts` + `src/instrumentation.ts`** - boot-time env validation (fail-fast, ADR-NEXT-S10)
 
 ### The CMS library (`web/src/lib/cms/`) - copy-paste into any derived project
-A single `CmsClient` contract with swappable adapters (ADR-NEXT-S04):
+A single `CmsClient` contract with swappable adapters (ADR-NEXT-S06):
 
 - `cms-client.ts` - the contract + domain types (`Post`, `Seo`, …). No provider dependency.
 - `mdx.ts` - **MDX adapter** (default): reads `web/content/blog/*.mdx`.

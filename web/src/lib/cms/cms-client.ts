@@ -1,5 +1,5 @@
 /**
- * The CMS contract (ADR-NEXT-S04). Routes, features, and components depend on
+ * The CMS contract (ADR-NEXT-S06). Routes, features, and components depend on
  * THIS interface + the factory — never on a provider SDK, raw `fetch`, or a
  * provider response shape. Adapters (MDX, WordPress) implement it; the factory
  * (`create-cms-client.ts`) selects one from env. Swapping the source is a

@@ -1,5 +1,5 @@
 /**
- * WordPress (headless) adapter (ADR-NEXT-S04) — REST to `wp-json/wp/v2`, mapping
+ * WordPress (headless) adapter (ADR-NEXT-S06) — REST to `wp-json/wp/v2`, mapping
  * WP response shapes → the domain `Post`. Responses are Zod-validated at this
  * seam (schema drift throws a typed error, ADR-NEXT-S09). SEO comes from Rank
  * Math (`rank-math.ts`). Selected by `CMS_CLIENT=wordpress`; reads

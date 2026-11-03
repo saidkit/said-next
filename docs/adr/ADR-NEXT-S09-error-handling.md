@@ -4,7 +4,7 @@
 **Status:** Accepted
 **Class:** System (portable across Next.js SSR web projects)
 
-> Adapted from the said-web ADR-NEXT-S09 (error handling) — re-cast from a Vite + React SPA (`react-error-boundary` root/route boundaries, TanStack Query `QueryCache.onError` toasts, a `parseResponse` Zod-at-the-axios-boundary) to **Next.js 16 App Router** conventions: `error.tsx` / `global-error.tsx` / `not-found.tsx`, expected-errors-as-return-values, and Server Actions. The error-**island** model carries over; the client query cache and its global toast layer do not — RSC fetches on the server, so failures surface through boundaries, not cache events. Builds on [ADR-NEXT-S02](ADR-NEXT-S02-frontend-stack.md) (the data tree), [ADR-NEXT-S03](ADR-NEXT-S03-feature-structure.md) (where boundary files sit), and [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) (the validated seam).
+> Adapted from the said-web ADR-NEXT-S09 (error handling) — re-cast from a Vite + React SPA (`react-error-boundary` root/route boundaries, TanStack Query `QueryCache.onError` toasts, a `parseResponse` Zod-at-the-axios-boundary) to **Next.js 16 App Router** conventions: `error.tsx` / `global-error.tsx` / `not-found.tsx`, expected-errors-as-return-values, and Server Actions. The error-**island** model carries over; the client query cache and its global toast layer do not — RSC fetches on the server, so failures surface through boundaries, not cache events. Builds on [ADR-NEXT-S02](ADR-NEXT-S02-frontend-stack.md) (the data tree), [ADR-NEXT-S03](ADR-NEXT-S03-feature-structure.md) (where boundary files sit), and [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) (the validated seam).
 
 ## Problem
 
@@ -22,7 +22,7 @@ Five containment layers, cheapest-to-most-invasive. Each catches a different fai
 export async function submitContact(_prev: unknown, formData: FormData) {
   const parsed = ContactSchema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) return { ok: false, message: "Check the highlighted fields." }
-  await sendMessage(parsed.data)               // service-module seam (ADR-NEXT-S04)
+  await sendMessage(parsed.data)               // service-module seam (ADR-NEXT-S06)
   return { ok: true }
 }
 // client: const [state, action, pending] = useActionState(submitContact, { ok: true })
@@ -94,7 +94,7 @@ const CardBoundary = catchError(function Fallback(_props, { unstable_retry }) {
 
 (A plain client `ErrorBoundary` component is the stable fallback if you prefer not to depend on the `unstable_` API.)
 
-**5. Validate at the service-module seam; type and log the failure.** External responses (CMS, API) are parsed with Zod inside `src/lib/<service>/` (ADR-NEXT-S04) *before* a component reads them — a compile-time `as T` cast is not validation. Drift throws a typed error that a boundary renders:
+**5. Validate at the service-module seam; type and log the failure.** External responses (CMS, API) are parsed with Zod inside `src/lib/<service>/` (ADR-NEXT-S06) *before* a component reads them — a compile-time `as T` cast is not validation. Drift throws a typed error that a boundary renders:
 
 ```ts
 // lib/cms/posts.ts — drift is a typed, logged error, not a silent bad render
@@ -117,7 +117,7 @@ Server-thrown errors reach the client as a generic message + `error.digest`; mat
 1. **Every fetching segment has a recovery story** — an `error.tsx` at or above it, or it returns / `notFound()`s expected failures inline. No segment relies on the root blanking.
 2. **`notFound()` for "missing," `throw` for "broken."** A 404 is expected (→ `not-found.tsx`); an exception is a bug (→ `error.tsx`). Don't crash a boundary to mean "not found."
 3. **Don't throw expected errors from Server Actions** — return `{ ok: false, … }` and render it via `useActionState`. Reserve `throw` for the genuinely unexpected.
-4. **Validate external data at the `src/lib/<service>/` seam (Zod), not in components** (ADR-NEXT-S04). Local/MDX content typed at build needs no re-parse.
+4. **Validate external data at the `src/lib/<service>/` seam (Zod), not in components** (ADR-NEXT-S06). Local/MDX content typed at build needs no re-parse.
 5. **One error-reporting swap-point** — boundaries and action `catch` call `logError()`; never scatter `Sentry.captureException` across components.
 6. **Typed errors get distinct copy** — new conditions (`ResponseShapeError`, `RateLimitError`) are classes in `src/lib/errors.ts` with a stable `name`, mapped to user copy centrally, not remapped per call site.
 7. **`error.tsx` / `global-error.tsx` are `"use client"`** and thin presentational shells.
@@ -153,5 +153,5 @@ Server-thrown errors reach the client as a generic message + `error.digest`; mat
 - **Source:** said-web ADR-NEXT-S09 (error handling) + its `ux/errors.md` — re-cast from the SPA (react-error-boundary + TanStack Query + Sonner) to App Router conventions.
 - **Frontend stack:** [ADR-NEXT-S02](ADR-NEXT-S02-frontend-stack.md) — the RSC data tree these boundaries protect.
 - **Feature structure:** [ADR-NEXT-S03](ADR-NEXT-S03-feature-structure.md) — where `error.tsx` / `loading.tsx` / `not-found.tsx` sit per segment.
-- **Service modules:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) — the validated seam (Rule 4).
+- **Service modules:** [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) — the validated seam (Rule 4).
 - **Conventions:** [`../conventions.md`](../conventions.md) — boundary files, Server Action and rendering patterns.

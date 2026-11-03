@@ -1,5 +1,5 @@
 /**
- * CMS factory (ADR-NEXT-S04 / S05) — the DI seam. Selects an adapter from env
+ * CMS factory (ADR-NEXT-S06 / S05) — the DI seam. Selects an adapter from env
  * and returns it typed as the `CmsClient` contract. Consumers call THIS, never
  * an adapter constructor. Dynamic `import()` keeps each adapter's deps out of
  * bundles that don't use it (e.g. `zod` + WordPress stay out of MDX-only builds).

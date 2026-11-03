@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 
 /**
- * Runtime environment (ADR-NEXT-S06). Validated ONCE at boot via
+ * Runtime environment (ADR-NEXT-S10). Validated ONCE at boot via
  * `src/instrumentation.ts` — a missing/malformed value crashes startup, not a
  * request. `import "server-only"` hard-fails if this is pulled into a client
  * bundle. Build-time `NEXT_PUBLIC_*` constants are environment-invariant and

@@ -41,7 +41,7 @@ src/features/<name>/
 Only `components/` is expected in every feature; the rest are added when needed. There is **no SPA `screens/` or `store/`** - route targets are `src/app/<route>/page.tsx`; client state is local or URL-driven (see the decision tree).
 
 - Routes call features; **features never import another feature's internals** - share via `src/components/`, `src/lib/`, or dependency injection (**ADR-NEXT-S05**).
-- Shared cross-feature UI in `src/components/`; shared utilities + **service modules** (external systems behind a contract, ADR-NEXT-S04) in `src/lib/` (imported as `@/lib/*`).
+- Shared cross-feature UI in `src/components/`; shared utilities + **service modules** (external systems behind a contract, ADR-NEXT-S06) in `src/lib/` (imported as `@/lib/*`).
 
 Canonical structure: [`adr/ADR-NEXT-S01-repository-structure.md`](adr/ADR-NEXT-S01-repository-structure.md).
 
@@ -61,7 +61,7 @@ Failing test: a single function/object whose existence is governed by another fi
 
 ### Service modules (external systems behind a contract)
 
-See **ADR-NEXT-S04**. Short version:
+See **ADR-NEXT-S06**. Short version:
 
 > Any external system (CMS, scheduler, analytics, search) is wrapped behind a **typed contract** in `src/lib/<service>/` and consumed through that interface - features depend on the contract, not the vendor SDK. Swapping the backing implementation is a localized change.
 
@@ -162,7 +162,7 @@ const Schema = z.object({ email: z.string().email(), message: z.string().min(1) 
 export async function submitContact(prevState: unknown, formData: FormData) {
   const parsed = Schema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) return { ok: false, errors: parsed.error.flatten() }
-  await sendToService(parsed.data)        // service-module contract (ADR-NEXT-S04)
+  await sendToService(parsed.data)        // service-module contract (ADR-NEXT-S06)
   return { ok: true }
 }
 ```
@@ -241,7 +241,7 @@ export async function getAllPosts(): Promise<Post[]> {
 }
 ```
 
-Keep the loader behind the **service-module contract** (ADR-NEXT-S04) so a CMS adapter can replace MDX without touching callers.
+Keep the loader behind the **service-module contract** (ADR-NEXT-S06) so a CMS adapter can replace MDX without touching callers.
 
 ---
 
@@ -341,7 +341,7 @@ Applies equally to magic strings - error keys, env-var names, route prefixes.
 - **No competing styling systems** - pick one styling layer and keep it singular; never add a second CSS framework alongside it.
 - **No data fetching in client components** - fetch on the server, pass props.
 - **No business logic in components** - extract to hooks or feature `server/` logic.
-- **No direct external-API calls in components** - go through a service module / contract (ADR-NEXT-S04).
+- **No direct external-API calls in components** - go through a service module / contract (ADR-NEXT-S06).
 - **No `new Date()` / `Math.random()` in render** - effects only (hydration mismatch).
 - **No nested ternaries in JSX** - extract to variables or early returns.
 - **No `any`** - use `unknown` and narrow.
@@ -387,9 +387,9 @@ make pre-commit    # R-GATE-LINT → R-GATE-TYPECHECK → R-GATE-BUILD, fails cl
 - `adr/ADR-NEXT-S01-repository-structure.md` - repo layout / where code goes / RSC boundary
 - `adr/ADR-NEXT-S02-frontend-stack.md` - framework, validation, styling policy, data/state tree
 - `adr/ADR-NEXT-S03-feature-structure.md` - feature anatomy along the RSC / client boundary
-- `adr/ADR-NEXT-S04-pure-service-modules.md` - external systems behind a contract
+- `adr/ADR-NEXT-S06-pure-service-modules.md` - external systems behind a contract
 - `adr/ADR-NEXT-S05-dependency-injection.md` - cross-feature wiring via a `Deps` interface
-- `adr/ADR-NEXT-S06-deployment.md` - build / container / CI gates / env seam / ISR runtime
+- `adr/ADR-NEXT-S10-deployment.md` - build / container / CI gates / env seam / ISR runtime
 - `adr/ADR-NEXT-S07-rendering-performance-seo.md` - rendering posture (SSG/ISR/dynamic) + contract-driven SEO seam
 - `adr/ADR-NEXT-S08-client-shared-state.md` - client-state tiers, server-seeded providers, theme without hydration mismatch
 - `vision.md` - architecture overview

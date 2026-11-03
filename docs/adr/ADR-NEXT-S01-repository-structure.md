@@ -34,7 +34,7 @@ project/
 │   ├── components/               # shared, cross-feature UI primitives
 │   │   └── ds/                   # design-system primitives (RSC-safe)
 │   ├── lib/                      # shared utilities + pure service modules (import as @/lib/*)
-│   │   └── <service>/            # external-system wrapper (e.g. cms/) — see ADR-NEXT-S04
+│   │   └── <service>/            # external-system wrapper (e.g. cms/) — see ADR-NEXT-S06
 │   └── ds/                       # vendored design system (CSS) — the styling layer
 ├── content/                      # file-based content (e.g. MDX) read at build/request
 ├── public/                       # static assets
@@ -47,7 +47,7 @@ project/
 ### Rules
 
 1. **A page composes; it doesn't implement.** 
-  - `page.tsx` is a thin entry point — it resolves dependencies (services via factories, ADR-NEXT-S04/S05) and calls a **feature** (`src/features/<name>/`) plus shared `src/components/`. 
+  - `page.tsx` is a thin entry point — it resolves dependencies (services via factories, ADR-NEXT-S06/S05) and calls a **feature** (`src/features/<name>/`) plus shared `src/components/`. 
   - Markup, state, and data logic live in the feature, never inline in the page.
 2. **Features are the unit of implementation.** 
   - A cohesive capability (blog, booking, concierge, …) lives in `src/features/<name>/` and owns its components, hooks, server logic, and types — see ADR-NEXT-S03. 
@@ -55,7 +55,7 @@ project/
 3. **RSC by default; `"use client"` only at the edges** - (handlers, hooks, browser APIs).
    - Presentational sections and `components/ds` primitives stay server components.
 4. **External systems behind pure service modules in `src/lib/<service>/`** 
-  - never scatter raw fetch/SDK calls across routes/UI. The module is the swappable seam (e.g. a CMS client behind a contract). See ADR-NEXT-S04.
+  - never scatter raw fetch/SDK calls across routes/UI. The module is the swappable seam (e.g. a CMS client behind a contract). See ADR-NEXT-S06.
 5. **`src/lib/` is domain-agnostic-to-app utilities + services.** 
   - UI imports from it via `@/lib/*`; `src/lib/` never imports from `src/app/`.
 6. **Styling layer is explicit.** 
@@ -81,7 +81,7 @@ Lower layers never import upward. **Features never import another feature's inte
 - The **multi-stage repo** (any outer layout the consuming project wraps this in) - project-specific; owned by the consuming project.
 - **Rendering/perf posture** (SSG-first, ISR-for-CMS) - see ADR-NEXT-S07.
 - **Feature internals** - see ADR-NEXT-S03 (feature structure). **Wiring / DI** — see ADR-NEXT-S05.
-- **External-service wrapper internals** — see ADR-NEXT-S04 (pure service modules).
+- **External-service wrapper internals** — see ADR-NEXT-S06 (pure service modules).
 
 ## Alternatives considered
 
@@ -98,13 +98,13 @@ Lower layers never import upward. **Features never import another feature's inte
 
 **Positive:** predictable locations for humans + LLMs; clean RSC/client split; one swappable seam per external system; styling layer unambiguous; targeted context loading.
 
-**Negative:** more folders than a flat app; discipline required to keep raw API calls out of routes (enforced by ADR-NEXT-S04 + code review).
+**Negative:** more folders than a flat app; discipline required to keep raw API calls out of routes (enforced by ADR-NEXT-S06 + code review).
 
 ## Related
 
 - **Source:** `said-ts` ADR-NEXT-S01 (monorepo structure), ADR-NEXT-S03 (feature structure).
 - **Instance:** the consuming project realizes this layout via its feature specs (`docs/features/`), which also choose the styling layer.
 - **Feature internals:** ADR-NEXT-S03 (feature structure) — the anatomy of `src/features/<name>/`.
-- **Service modules:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) (pure service modules) — the `src/lib/<service>/` seam.
+- **Service modules:** [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) (pure service modules) — the `src/lib/<service>/` seam.
 - **Dependency injection:** ADR-NEXT-S05 — how routes/features receive services (day-one).
 - **Conventions:** `../conventions.md`.

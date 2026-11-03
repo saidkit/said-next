@@ -13,7 +13,7 @@ A Next.js SSR web app needs one settled answer for its frontend runtime — fram
 **Context:**
 - App Router + React Server Components by default; server runtime (`output: "standalone"`).
 - AI-native development — TypeScript-first, Zod-validated boundaries; an agent needs ONE data-placement tree, not a per-library state matrix.
-- Backend-agnostic — external systems (a CMS, etc.) sit behind a service-module seam (ADR-NEXT-S04), not baked into the stack.
+- Backend-agnostic — external systems (a CMS, etc.) sit behind a service-module seam (ADR-NEXT-S06), not baked into the stack.
 - Styling-layer-agnostic — the stack fixes everything *except* the design system, which each project picks for itself.
 
 ## Decision
@@ -44,7 +44,7 @@ No global client store, no client query cache, no client-side router: RSC fetche
 
 | Concern | Choice | When |
 |---|---|---|
-| Headless CMS | A provider adapter behind a pure service module (`src/lib/<cms>/`) | Content comes from an external CMS — swap MDX ↔ CMS without touching routes (ADR-NEXT-S04) |
+| Headless CMS | A provider adapter behind a pure service module (`src/lib/<cms>/`) | Content comes from an external CMS — swap MDX ↔ CMS without touching routes (ADR-NEXT-S06) |
 | Testing | Vitest (unit) / Playwright (e2e) | A non-trivial pure function, service contract, or critical flow needs regression cover |
 | Client state | A client provider / state library | State is genuinely shared across the client tree and Context + `useState` no longer suffice (data tree §5) |
 | URL-state helper | nuqs | Many typed query params need syncing and raw `searchParams` parsing gets heavy |
@@ -57,7 +57,7 @@ No global client store, no client query cache, no client-side router: RSC fetche
 4. **Exactly one styling layer, chosen by the project.** Pick Tailwind, a vendored design system, or CSS Modules — *one* — and never run two competing systems (specificity wars + drift). This ADR fixes the runtime, not the design system; the project records its choice and applies it in `globals.css` + the root layout.
 5. **One path alias: `@/*` → `src/*`.** Cross-directory imports use `@/`; relative imports only within a route/feature folder; never `../../` across the tree. Next reads the alias from `tsconfig.json` natively — no bundler alias config needed.
 6. **Build to `output: "standalone"` via the Next CLI (Turbopack is the default bundler).** The build is a self-contained Node server (container-deployable), not a static export; routes that can be static still prerender, but standalone is the server posture.
-7. **Content is file-based and loaded through `src/lib/`.** MDX lives under `content/`, read by a loader module — never inlined in routes. An external CMS is an *adapter behind the same seam* (ADR-NEXT-S04), not a second content path bolted onto routes.
+7. **Content is file-based and loaded through `src/lib/`.** MDX lives under `content/`, read by a loader module — never inlined in routes. An external CMS is an *adapter behind the same seam* (ADR-NEXT-S06), not a second content path bolted onto routes.
 8. **Commands run through `make`.** `make dev` · `make build` · `make lint` · `make typecheck` · `make pre-commit` (= lint + typecheck + build). Agents and CI call these, not raw package-manager invocations; the runner is the stable contract over the underlying CLI.
 9. **Add beyond the core only on need.** A test runner, a client-state library, nuqs, or a CMS adapter enters when a feature requires it (see Optional additions) — never preinstalled "just in case."
 
@@ -130,7 +130,7 @@ Add a provider **only** when data tree §5 is real — a `"use client"` componen
 - **Source:** said-web ADR-NEXT-S02 (Vite + React SPA frontend stack) — re-cast to this Next.js 16 RSC stack.
 - **Repository structure:** [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md) — where the stack's code lives (`src/app/`, `src/features/`, `src/lib/`).
 - **Feature internals:** ADR-NEXT-S03 (feature structure) — the anatomy of `src/features/<name>/` the stack composes.
-- **Service modules:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) — external systems (a CMS, …) behind a contract; the optional-CMS seam.
+- **Service modules:** [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) — external systems (a CMS, …) behind a contract; the optional-CMS seam.
 - **Dependency injection:** ADR-NEXT-S05 — how routes/features receive services (day-one).
 - **Conventions:** [`../conventions.md`](../conventions.md) — full how-to (RSC boundary, import order, naming, data patterns).
 - **Vision:** [`../vision.md`](../vision.md) — the stack at a glance + optional layers.

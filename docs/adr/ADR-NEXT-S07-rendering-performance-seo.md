@@ -13,7 +13,7 @@ A Next.js SSR site must decide, **per route**, how fresh its content is — buil
 
 **Context:**
 - App Router + RSC by default; `fetch` is **uncached by default** in Next 16; Turbopack build.
-- Content reaches the UI through a **service-module contract** (ADR-NEXT-S04) — MDX today, a CMS tomorrow.
+- Content reaches the UI through a **service-module contract** (ADR-NEXT-S06) — MDX today, a CMS tomorrow.
 - The native **Metadata API** (`generateMetadata`, `sitemap.ts`, `robots.ts`) is the SEO surface — no vendor SEO library needed.
 
 ## Decision
@@ -35,7 +35,7 @@ contract, populated by adapters; progressive loading via file-based boundaries.*
 
 ```ts
 // app/blog/[slug]/page.tsx — generateMetadata reads the CONTRACT, not a CMS
-import { loadPost } from "@/features/blog/server/load-post"   // returns ContentItem (ADR-NEXT-S04)
+import { loadPost } from "@/features/blog/server/load-post"   // returns ContentItem (ADR-NEXT-S06)
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const post = await loadPost((await params).slug)
@@ -100,7 +100,7 @@ author's responsibility per content type.
 
 ## Related
 
-- **Content contract:** [ADR-NEXT-S04](ADR-NEXT-S04-pure-service-modules.md) — `post.seo` is a field-set on the `ContentItem` these service modules return; adapters populate it.
+- **Content contract:** [ADR-NEXT-S06](ADR-NEXT-S06-pure-service-modules.md) — `post.seo` is a field-set on the `ContentItem` these service modules return; adapters populate it.
 - **Layout:** [ADR-NEXT-S01](ADR-NEXT-S01-repository-structure.md) — routes/layout this posture renders.
 - **Boundaries:** [ADR-NEXT-S09](ADR-NEXT-S09-error-handling.md) — `loading.tsx` / `<Suspense>` pair with the error containment layers.
 - **Instance:** the consuming project picks the concrete route map, per-route rendering choices, and the CMS adapter that fills `post.seo`.
