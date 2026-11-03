@@ -19,7 +19,7 @@ Boots in **MDX mode** by default - the seed post in `web/content/blog/` renders 
 - **`CLAUDE.md`** - AI development guide (entry point for Claude Code)
 - **`conventions.md`** - code patterns, the RSC boundary, import rules
 - **`idea.md` / `vision.md`** - project context templates
-- **`adr/ADR-NEXT-SXX`** - System ADRs (repo structure, stack, features, service modules, DI, deployment, rendering/SEO, client state, error handling)
+- **`adr/ADR-NEXT-SXX`** - STARTER ADRs, provided by the starter (repo structure, stack, features, service modules, DI, deployment, rendering/SEO, client state, error handling)
 - **`features/`, `ux/`, `qa/`** - feature-spec + task-log stencils, UX shape specs, quality-gate checklists
 
 ### The Next app (`web/`)

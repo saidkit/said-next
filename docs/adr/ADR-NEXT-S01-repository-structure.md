@@ -76,7 +76,7 @@ app/<route>/page.tsx  →  features/<name>/*  →  lib/* (utils, services)  → 
 
 Lower layers never import upward. **Features never import another feature's internals** - share via `components/`, `lib/`, or dependency injection (ADR-NEXT-S05). Routes stay sideways-independent; cross-feature code goes up into `components/`/`lib/`.
 
-## Out of scope (project concerns, not this system ADR)
+## Out of scope (project concerns, not this STARTER ADR)
 
 - The **multi-stage repo** (any outer layout the consuming project wraps this in) - project-specific; owned by the consuming project.
 - **Rendering/perf posture** (SSG-first, ISR-for-CMS) - see ADR-NEXT-S07.
