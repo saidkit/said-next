@@ -12,6 +12,7 @@ All ADRs here are **STARTER ADRs** (`ADR-NEXT-S0x`) - cross-cutting decisions
 | ADR-NEXT-S01-repository-structure.md      | Understand where code goes (Next.js SSR app layout)                                             |
 | ADR-NEXT-S02-frontend-stack.md            | Choose / understand the frontend stack (Next 16, RSC, Zod, styling policy)                      |
 | ADR-NEXT-S03-feature-structure.md         | Lay out a feature's internals (components / hooks / server, RSC boundary)                       |
+| ADR-NEXT-S04-versions-and-upgrades.md    | Stamp or read the starter's release; walk its upgrade playbooks |
 | ADR-NEXT-S05-dependency-injection.md      | Wire cross-feature deps (a `Deps` interface at the route/server composition point)              |
 | ADR-NEXT-S06-pure-service-modules.md      | Wrap an external system (CMS, scheduler) behind a contract                                      |
 | ADR-NEXT-S07-rendering-performance-seo.md | Choose a route's rendering (SSG / ISR / dynamic) + produce SEO from the content contract        |
@@ -26,6 +27,7 @@ All ADRs here are **STARTER ADRs** (`ADR-NEXT-S0x`) - cross-cutting decisions
 | ADR-NEXT-S01-repository-structure.md      | Repository structure (Next.js SSR app layout)                                                             |
 | ADR-NEXT-S02-frontend-stack.md            | Frontend stack (Next 16 App Router, RSC, Zod, styling-layer policy)                                       |
 | ADR-NEXT-S03-feature-structure.md         | Feature structure (feature anatomy along the RSC / client boundary)                                       |
+| ADR-NEXT-S04-versions-and-upgrades.md    | Versions and upgrades (the stamp, the CHANGELOG, the `upgrade/` playbooks) |
 | ADR-NEXT-S05-dependency-injection.md      | Dependency injection (`Deps` at the route / server composition point)                                     |
 | ADR-NEXT-S06-pure-service-modules.md      | Pure service modules (external systems behind a contract)                                                 |
 | ADR-NEXT-S07-rendering-performance-seo.md | Rendering, performance & SEO (static-first; contract-driven SEO seam)                                     |
