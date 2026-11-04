@@ -4,6 +4,12 @@ The releases of this Next.js SAID starter, newest first. A cloned project record
 which release it is based on in its `## Lane` block (`SAID.version:`, the line under `SAID.lane:`);
 this file says what each release is.
 
+## said-next@1.1.0 - 2026-11-04
+
+- The `## Lane` block is stamped `said@0.26.0`: the lane passes the said upgrade checks up to that release.
+- The task template carries the operator-question hold: the `**Blocked-on question:**` field and the `## Lifted holds` section, lifted only by a recorded ruling.
+- The completeness recompute runs from `skills/board/`, the script's new home.
+
 ## said-next@1.0.3 - 2026-09-14
 
 Completeness surface last-mile — a web adopter can now run the completeness gate:

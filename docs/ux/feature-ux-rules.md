@@ -85,7 +85,7 @@ said-checker:   completeness
 said-governs:   surface=web             # fires on a feature that bears a surface (per the feature `Surface:`)
 said-capture:   process-spawn          # oracle-tier containers observed by executing the surface's own probe read-only (from the capture manifest's per-unit cmd:); non-oracle containers stay declared-evidence in the same manifest, which remains the cited capture-evidence-ref
 said-judge:     oracle
-said-recompute: python3 "$SAID_PLUGIN_ROOT/skills/status/said_completeness.py"   # designed ⊆ (built ∪ accounted-drops)
+said-recompute: python3 "$SAID_PLUGIN_ROOT/skills/board/said_completeness.py"   # designed ⊆ (built ∪ accounted-drops)
 said-env:       SAID_GRAMMAR;SAID_SURFACE   # the per-surface lane grammar path (docs/ux/feature-ux-grammar.md) + section selector, injected by the oracle; the check reads unit + containers + attribute set from it
 ```
 

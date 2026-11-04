@@ -5,8 +5,8 @@
 Single lane — this project is one lane.
 
 - SAID.lane:         said-next
-- SAID.version:      said@0.8.0
-- SAID.starter:      said-next@1.0.3
+- SAID.version:      said@0.26.0
+- SAID.starter:      said-next@1.1.0
 - SAID.docs-root:    docs/
 - SAID.mounts:       [web/, server/]
 - SAID.feature-spec: docs/features/<id>.md
