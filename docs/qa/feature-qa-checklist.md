@@ -3,7 +3,7 @@
 > **Starter-wiring stub.** The non-UX QA contract for the said-nextjs starter:
 > project-wide quality gates expressed as `R-GATE-*` rules. Companion to a future
 > `feature-ux-checklist.md` (visual / interaction / screen-shape rules). Consumed by
-> `/said:review-qa` (Phase 3.5 hygiene gate) and by `make pre-commit` (husky + CI).
+> `/said:review-qa` (Inspect's hygiene gate) and by `make pre-commit` (husky + CI).
 >
 > **This file is the only place gate `verify:` actions live.** `CLAUDE.md` names the
 > `R-GATE-*` IDs and links here; it never inlines the command.
